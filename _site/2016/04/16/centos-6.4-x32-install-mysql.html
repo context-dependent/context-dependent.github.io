@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+    <!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/logo.png">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+
+    <title>CentOS 6.4 x32 安装 MySQL</title>
+
+    <meta name="keywords" content="WngLMng, wangliming, 王立明">
+    <meta name="author" content="WngLMng">
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+
+    <meta property="og:site_name" content="WngLMng's Blog — 一个写代码的">
+    <meta property="og:url" content="/">
+    <meta property="og:title" content="CentOS 6.4 x32 安装 MySQL">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="MySQL安装">
+
+    <!--   Core CSS Files   -->
+    <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <!-- Canonical SEO -->
+    <link rel="canonical" href="http://localhost:4000/2016/04/16/centos-6.4-x32-install-mysql.html">
+    <link rel="alternate" type="application/rss+xml" title="Your awesome title" href="http://localhost:4000/feed.xml">
+</head>
+
+<body>
+    <div id="nav" layout="row top-left">
+    <div self="left">
+        <a href="/"><div class="logo logo-isNotVisIfMobile">Your awesome title</div></a>
+        <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
+    </div>
+    <div class="nav-isNotVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+    <div class="nav-isVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+</div>
+
+    <div id="content">
+        <div class="container container--header">
+    <h1 class="h1--home-title">CentOS 6.4 x32 安装 MySQL</h1>
+    <p></p>
+</div>
+
+        <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
+
+<div class="page-wrapper">
+    <div class="container--text">
+        <h2 id="mysql安装">MySQL安装</h2>
+
+<p>这里介绍以 CentOS6.4 X36 安装为例。</p>
+
+<ol>
+  <li>
+    <p>检测系统是否自带安装 mysql；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">yum</span> <span class="n">list</span> <span class="n">installed</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">mysql</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>删除系统自带的 mysql 及其依赖命令；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">remove</span> <span class="n">mysql</span><span class="o">-</span><span class="n">libs</span><span class="p">.</span><span class="n">x86_64</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>给 CentOS 添加 rpm 源，并且选择较新的源命令；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">wget</span> <span class="n">dev</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="k">get</span><span class="o">/</span><span class="n">mysql</span><span class="o">-</span><span class="n">community</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">el6</span><span class="o">-</span><span class="mi">5</span><span class="p">.</span><span class="n">noarch</span><span class="p">.</span><span class="n">rpm</span>
+ <span class="n">yum</span> <span class="n">localinstall</span> <span class="n">mysql</span><span class="o">-</span><span class="n">community</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">el6</span><span class="o">-</span><span class="mi">5</span><span class="p">.</span><span class="n">noarch</span><span class="p">.</span><span class="n">rpm</span>
+ <span class="n">yum</span> <span class="n">repolist</span> <span class="k">all</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">mysql</span>
+ <span class="n">yum</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">manager</span> <span class="c1">--disable mysql55-community</span>
+ <span class="n">yum</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">manager</span> <span class="c1">--disable mysql56-community</span>
+ <span class="n">yum</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">manager</span> <span class="c1">--enable mysql57-community-dmr</span>
+ <span class="n">yum</span> <span class="n">repolist</span> <span class="n">enabled</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">mysql</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>安装 mysql 服务器命令；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">yum</span> <span class="n">install</span> <span class="n">mysql</span><span class="o">-</span><span class="n">community</span><span class="o">-</span><span class="n">server</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>启动 mysql 命令；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">service</span> <span class="n">mysqld</span> <span class="k">start</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>查看 mysql 是否自启动，并且设置开启自启动命令；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">chkconfig</span> <span class="c1">--list | grep mysqld</span>
+ <span class="n">chkconfig</span> <span class="n">mysqld</span> <span class="k">on</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>mysql 安全设置命令；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">mysql_secure_installation</span>
+</code></pre>
+    </div>
+  </li>
+</ol>
+
+<h2 id="问题">问题</h2>
+
+<h4 id="登录时提示密码错误">登录时提示密码错误</h4>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="n">root</span><span class="o">@</span><span class="n">cloud</span> <span class="n">aii</span><span class="o">-</span><span class="n">blog</span><span class="p">]</span><span class="o">#</span> <span class="n">mysql_secure_installation</span>
+
+<span class="n">Securing</span> <span class="n">the</span> <span class="n">MySQL</span> <span class="n">server</span> <span class="n">deployment</span><span class="p">.</span>
+
+<span class="n">Enter</span> <span class="n">password</span> <span class="k">for</span> <span class="k">user</span> <span class="n">root</span><span class="p">:</span>
+<span class="n">Error</span><span class="p">:</span> <span class="k">Access</span> <span class="n">denied</span> <span class="k">for</span> <span class="k">user</span> <span class="s1">'root'</span><span class="o">@</span><span class="s1">'localhost'</span> <span class="p">(</span><span class="k">using</span> <span class="n">password</span><span class="p">:</span> <span class="k">NO</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>解决方法</p>
+
+<ol>
+  <li>
+    <p>跳过密码登录，修改 /etc/my.cnf 文件，在文件末尾添加下面代码，</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">skip</span><span class="o">-</span><span class="k">grant</span><span class="o">-</span><span class="n">tables</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>重启服务；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">service</span> <span class="n">mysqld</span> <span class="k">restart</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>重新连接，并修改密码；</p>
+
+    <div class="language-sql highlighter-rouge"><pre class="highlight"><code> <span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">p</span> <span class="o">//</span> <span class="err">连接数据库</span>
+ <span class="k">sql</span><span class="o">&gt;</span> <span class="n">use</span> <span class="n">mysql</span><span class="p">;</span> <span class="o">//</span> <span class="err">使用</span> <span class="n">mysql</span>
+ <span class="k">sql</span><span class="o">&gt;</span> <span class="k">update</span> <span class="k">user</span> <span class="k">set</span> <span class="n">authentication_string</span><span class="o">=</span><span class="n">password</span><span class="p">(</span><span class="s1">'newpassword'</span><span class="p">)</span> <span class="k">where</span> <span class="k">user</span><span class="o">=</span><span class="s1">'root'</span><span class="p">;</span> <span class="o">//</span> <span class="err">修改</span> <span class="n">root</span> <span class="err">用户密码</span>
+ <span class="k">sql</span><span class="o">&gt;</span> <span class="n">exit</span><span class="p">;</span> <span class="o">//</span> <span class="err">退出</span> <span class="n">mysql</span>
+ <span class="n">service</span> <span class="n">mysqld</span> <span class="n">reatart</span> <span class="o">//</span> <span class="err">重启服务</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>现在就可以使用新的密码登录了。</p>
+  </li>
+</ol>
+
+<h4 id="远程客户端不能连接数据库">远程客户端不能连接数据库</h4>
+
+<p>详情可以参考 <a href="http://dba.stackexchange.com/questions/45806/cannot-change-root-access-in-mysql-to">Cannot change root access in MySQL to %</a> 。</p>
+
+    </div>
+</div>
+
+<style type="text/css">
+    .ds-thread {
+        max-width: 680px;
+        margin: auto;
+    }
+</style>
+
+<!-- 多说评论框 start -->
+<!-- <div class="ds-thread" data-thread-key="/2016/04/16/centos-6.4-x32-install-mysql.html" data-title=CentOS 6.4 x32 安装 MySQL data-url=http://localhost:4000/2016/04/16/centos-6.4-x32-install-mysql.html></div> -->
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+// var duoshuoQuery = {short_name:"wnglmng"};
+//     (function() {
+//         var ds = document.createElement('script');
+//         ds.type = 'text/javascript';ds.async = true;
+//         ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+//         ds.charset = 'UTF-8';
+//         (document.getElementsByTagName('head')[0]
+//          || document.getElementsByTagName('body')[0]).appendChild(ds);
+//     })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+<div class="related_posts-container" style="max-width: 790px;">
+    <p class="related_posts-header">RELATED ARTICLES</p>
+
+    <div layout="rows center-spread">
+
+        
+        
+        
+        
+            <a href="/2016/03/21/the-server-quit-without-updating-pid-file.html">
+                <div class="card card--article not-visible" >
+                    <div class="card-body">
+                        <div class="card-title">The server quit without updating PID file.</div>
+                        <div class="card-description card-description--clamp-0">
+                            今天在命令行启动MySQL的时候, 报了一个错误, 无法启动. 如下..ERROR! The server quit without updating PID file (/usr/local/var/mysql/WngLMng-MacBook.local.pid).解决办法如下, 将MySQL下的对应的err文件删除即可.$ rm -r /usr/local/var/mysql/WngLM...
+                        </div>
+                    </div>
+                    <div class="card-hero">
+                        <div class="card-image card-image--size-185" data-url="https://ww3.sinaimg.cn/mw690/906cb9dbgw1fayouoc4xij21kw0f5jxk.jpg"></div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2016-03-21</div>
+                            <div class="card-tag is-notShownIfHover">@</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    code &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                 </div>
+            </a>
+        
+        
+
+        
+        
+        
+            <a href="/2016/05/29/ajax-cant-access-origin-resource.html">
+                <div class="card card--article not-visible">
+                    <div class="card-body">
+                        <div class="card-title card-title--articleIfNoImage">Ajax 跨域访问</div>
+                        <p class="card-description card-description--clamp-14">“ajax access origin resource”</p>
+                        <p class="card-description card-article-preview">
+                            ##问题现象当出现跨域访问的时候， ajax 通常会报类似如下错误：>XMLHttpRequest cannot load http://localhost:8000/simple/api/users/me/login. Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://localhost:8080' is therefore not allowed access.## 解决办法### Tomcat设置允许跨域访问这里描述以...
+                        </p>
+                        <p></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2016-05-29</div>
+                            <div class="card-tag is-notShownIfHover">@</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    code &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        
+        
+        
+
+    </div>
+</div>
+
+
+    </div>
+    <div id="footer" layout="rows center-left">
+    <div id="end-mark">
+        <div class="end-mark-icon"></div>
+        <p class="copyright">WngLMng' Blog © 2015&nbsp;&nbsp;·&nbsp;&nbsp;一个写代码的</p>
+    </div>
+    <div id="footer-links" self="right">
+        <ul>
+            <a href="#"><li class="wechat" target="_blank"></li></a>
+            <a href="mailto:" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/" target="_blank"><li class="github"></li></a>
+        </ul>
+    </div>
+</div>
+
+</body>
+<!--   Core JS Files   -->
+<script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/mixitup/2.1.11/jquery.mixitup.min.js"></script>
+<script src="/assets/js/main.js"></script>
+
+</html>
