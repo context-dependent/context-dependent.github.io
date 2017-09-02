@@ -1,0 +1,72 @@
+<p>This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.</p>
+
+<p>Pro-Football-Reference has a wealth of freely available detailed historical data. We are going to use <code>rvest</code> and <code>dplyr</code>, part of the <code>tidyverse</code>, to scrape, clean, and concatenate that historical data.</p>
+
+<h2>Scraping functions</h2>
+
+<h3>Get one table from PFR</h3>
+<figure class="highlight"><pre><code class="language-r" data-lang="r">pfr_single &lt;- function(yr) {
+  url &lt;- sprintf(&quot;https://www.pro-football-reference.com/years/%d/fantasy.htm&quot;,
+                 yr)
+
+  cols &lt;- c(&quot;rank&quot;, &quot;name&quot;, &quot;team&quot;, &quot;pos&quot;, &quot;age&quot;, &quot;played&quot;, &quot;started&quot;,
+            &quot;pass_cmp&quot;, &quot;pass_att&quot;, &quot;pass_yds&quot;, &quot;pass_td&quot;, &quot;pass_int&quot;,
+            &quot;rush_att&quot;, &quot;rush_yds&quot;, &quot;rush_ypc&quot;, &quot;rush_td&quot;,
+            &quot;rec_tgt&quot;, &quot;rec_rec&quot;, &quot;rec_yds&quot;, &quot;rec_ypr&quot;, &quot;rec_td&quot;,
+            &quot;f_points&quot;, &quot;dkpt&quot;, &quot;fdpt&quot;, &quot;vbd&quot;, &quot;pos_rank&quot;, &quot;ov_rank&quot;)
+  print(url)
+  tbl_raw &lt;- (read_html(url) %&gt;%
+                html_table(header = FALSE))[[1]]
+
+  colnames(tbl_raw) &lt;- cols
+
+  tbl_clean &lt;- tbl_raw %&gt;%
+    mutate(year = yr, rank = as.integer(rank)) %&gt;%
+    filter(complete.cases(.))
+
+  return(tbl_clean)
+}
+</code></pre></figure>
+<h3>Apply pfr_single to a to a range of years</h3>
+<figure class="highlight"><pre><code class="language-r" data-lang="r">#&#39; Scrape and clean data from profootballreference.com for a range of years.
+#&#39; returns a single tibble with a position, passing, rushing, receiving
+#&#39; statistics for each player, along with age etc.
+#&#39;
+#&#39; @param yrs vector -- integers between 1993 and 2016
+#&#39; @param write logical -- whether or not to write the cleaned data to a csv in
+#&#39; the ./Data folder
+#&#39;
+#&#39; @return df_bound a tibble
+#&#39; @export fantasy_data_YRSTART_YREND.csv
+#&#39;
+#&#39; @examples
+#&#39;
+scrape_fantasy &lt;- function(yrs, write = TRUE) {
+  suppressWarnings(
+    df_bound &lt;- lapply(yrs, pfr_single) %&gt;% bind_rows %&gt;%
+      as_data_frame() %&gt;%
+      mutate_at(
+        .vars = vars(-name, -team, -pos),
+        .funs = as.numeric
+      ) %&gt;%
+      filter(pos != &quot;&quot;, !is.na(f_points))
+  )
+
+  if(write) {
+    write_csv(df_bound,
+      sprintf(&quot;./Data/fantasy_data_%d_%d.csv&quot;, min(yrs), max(yrs)))
+  }
+  return(df_bound)
+}
+</code></pre></figure>
+<h2>Example plots</h2>
+
+<h3>Season point distributions by position</h3>
+<figure class="highlight"><pre><code class="language-r" data-lang="r">df_stats %&gt;%
+  filter(f_points &gt; 0) %&gt;%
+  ggplot(aes(f_points, fill = pos)) +
+  geom_histogram(binwidth = 1) +
+  ggthemes::scale_fill_wsj() +
+  facet_grid(pos~.)
+</code></pre></figure>
+<p><img src="https://wnglmng.com/assets/images/pos_points.png" alt="season points by position plot"></p>
