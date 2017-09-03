@@ -1,17 +1,17 @@
 # Basic
-title: WngLMng's Blog
-author: WngLMng
-description: 嗨，我是王立明，一名来自黑龙江省鹤岗市的男生。<br/>现于无线生活（北京），从事互联网开发工作。
+title: context dependent
+author: thomas mcmanus
+description: this is a bad blog
 
-url: "https://wnglmng.com"
+url: "https://context-dependent.github.io"
 
 permalink: /:year/:month/:title/
 
 # Format
-highlighter: plain
-markdown: redcarpet
-redcarpet:
-  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", tables]
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 
 # Pagination
 gems: [jekyll-paginate]
@@ -20,7 +20,5 @@ paginate_path: "pages/:num/"
 
 # Social
 social:
-    weibo: sunmoon1993
-    github: wnglmng
-    gplus: 112547382138552250597
-    mail: wnglmng@gmail.com
+    github: context-dependent
+    mail: tomas.k.mcmanus@gmail.com

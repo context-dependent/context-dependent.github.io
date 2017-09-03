@@ -12,7 +12,7 @@
 
     <meta name="keywords" content="WngLMng, wangliming, 王立明">
     <meta name="author" content="WngLMng">
-    <meta name="description" content="嗨，我是王立明，一名来自黑龙江省鹤岗市的男生。<br/>现于无线生活（北京），从事互联网开发工作。">
+    <meta name="description" content="this is a bad blog">
 
     <meta property="og:site_name" content="WngLMng's Blog — 一个写代码的">
     <meta property="og:url" content="/">
@@ -25,14 +25,14 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
 
     <!-- Canonical SEO -->
-    <link rel="canonical" href="https://wnglmng.com/2016/06/css3-waterfall-layout/">
-    <link rel="alternate" type="application/rss+xml" title="WngLMng's Blog" href="https://wnglmng.com/feed.xml">
+    <link rel="canonical" href="https://context-dependent.github.io/2016/06/css3-waterfall-layout/">
+    <link rel="alternate" type="application/rss+xml" title="context dependent" href="https://context-dependent.github.io/feed.xml">
 </head>
 
 <body>
     <div id="nav" layout="row top-left">
     <div self="left">
-        <a href="/"><div class="logo logo-isNotVisIfMobile">WngLMng's Blog</div></a>
+        <a href="/"><div class="logo logo-isNotVisIfMobile">context dependent</div></a>
         <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
     </div>
     <div class="nav-isNotVisIfMobile">
@@ -64,111 +64,122 @@
 <div class="page-wrapper">
     <div class="container--text">
         <p>HTML代码如下：</p>
-<figure class="highlight"><pre><code class="language-html" data-lang="html">&lt;div class=&quot;container&quot; id=&quot;container&quot;&gt;&lt;/div&gt;
-&lt;div id=&quot;imageContainer&quot; class=&quot;container&quot;&gt;&lt;/div&gt;
-</code></pre></figure>
+
+<p>```html</p>
+<div class="container" id="container"></div>
+<div id="imageContainer" class="container"></div>
+<p>```</p>
+
 <p>CSS代码如下：</p>
-<figure class="highlight"><pre><code class="language-css" data-lang="css">        .container {
+
+<p>```css
+		.container {
             padding : 20px;
-            margin: 20px;
+            margin: 20px;</p>
 
-            border-bottom: 1px solid #EEEEEE;
+<div class="highlighter-rouge"><pre class="highlight"><code>        border-bottom: 1px solid #EEEEEE;
 
-            -webkit-column-count: 5;
-            -webkit-column-gap: 10px;
-            -webkit-column-rule: 5px;
+        -webkit-column-count: 5;
+        -webkit-column-gap: 10px;
+        -webkit-column-rule: 5px;
 
-            -moz-column-count: 5;
-            -moz-column-gap: 20px;
-            -moz-column-rule: 5px;
+        -moz-column-count: 5;
+        -moz-column-gap: 20px;
+        -moz-column-rule: 5px;
 
-            /* ie */
-             column-count: 5;
-             column-gap: 20px;
-             column-rule: 5px;
-        }
+        /* ie */
+         column-count: 5;
+         column-gap: 20px;
+         column-rule: 5px;
+    }
 
-        hr {
-            margin : 20px 0;
-            line-height : 20px;
-        }
+    hr {
+        margin : 20px 0;
+        line-height : 20px;
+    }
 
-        .container .unit {
-            margin-top : 10px;
-        }
+    .container .unit {
+        margin-top : 10px;
+    }
 
-        .container .unit img {
-            width : 100%;
-            border-radius: 5px;
-        }
-</code></pre></figure>
+    .container .unit img {
+        width : 100%;
+        border-radius: 5px;
+    } ```
+</code></pre>
+</div>
+
 <p>JS代码如下：</p>
-<figure class="highlight"><pre><code class="language-js" data-lang="js">        var M = {};
-        M.util = {
-            bgColorArray : [
-                    &#39;#00CCCC&#39;,&#39;#33FF99&#39;,&#39;#6600FF&#39;,&#39;#666699&#39;,&#39;#660099&#39;,&#39;#9933FF&#39;,&#39;#993333&#39;,&#39;#99CC66&#39;,&#39;#CC3333&#39;,&#39;#CC33FF&#39;,
-                ],
-            imgArray : [
-                &#39;http://ebay01.qiniudn.com/0dd7912397dda144d679b625b0b7d0a20cf48631.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/37d12f2eb9389b506e32b4588735e5dde6116eee.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/472309f79052982227ecebc7d5ca7bcb0b46d4d3.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/4e4a20a4462309f7d7426b97700e0cf3d7cad602.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/63d0f703918fa0ec42ebb209249759ee3d6ddb82.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/63d0f703918fa0ec4f8db709249759ee3d6ddb68.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/730e0cf3d7ca7bcb2248eab7bc096b63f624a872.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/7c1ed21b0ef41bd511e9caa553da81cb39db3d2c.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/8326cffc1e178a8245d04e45f403738da877e863.jpg-medium&#39;,
-                &#39;http://ebay01.qiniudn.com/8694a4c27d1ed21b38d780e0af6eddc451da3f9c.jpg-medium&#39;
-            ]
-        };
 
-        M.render = {
-            renderColorBox : function() {
-                var container = document.getElementById(&#39;container&#39;);
+<p>```js
+		var M = {};
+		M.util = {
+			bgColorArray : [
+					‘#00CCCC’,’#33FF99’,’#6600FF’,’#666699’,’#660099’,’#9933FF’,’#993333’,’#99CC66’,’#CC3333’,’#CC33FF’,
+				],
+			imgArray : [
+				‘http://ebay01.qiniudn.com/0dd7912397dda144d679b625b0b7d0a20cf48631.jpg-medium’,
+				‘http://ebay01.qiniudn.com/37d12f2eb9389b506e32b4588735e5dde6116eee.jpg-medium’,
+				‘http://ebay01.qiniudn.com/472309f79052982227ecebc7d5ca7bcb0b46d4d3.jpg-medium’,
+				‘http://ebay01.qiniudn.com/4e4a20a4462309f7d7426b97700e0cf3d7cad602.jpg-medium’,
+				‘http://ebay01.qiniudn.com/63d0f703918fa0ec42ebb209249759ee3d6ddb82.jpg-medium’,
+				‘http://ebay01.qiniudn.com/63d0f703918fa0ec4f8db709249759ee3d6ddb68.jpg-medium’,
+				‘http://ebay01.qiniudn.com/730e0cf3d7ca7bcb2248eab7bc096b63f624a872.jpg-medium’,
+				‘http://ebay01.qiniudn.com/7c1ed21b0ef41bd511e9caa553da81cb39db3d2c.jpg-medium’,
+				‘http://ebay01.qiniudn.com/8326cffc1e178a8245d04e45f403738da877e863.jpg-medium’,
+				‘http://ebay01.qiniudn.com/8694a4c27d1ed21b38d780e0af6eddc451da3f9c.jpg-medium’
+			]
+		};</p>
 
-                var total = 10;
-                var htmlArray = [];
-                for (var i = 0; i &lt; total; i++) {
-                    htmlArray.push(&#39;&lt;div class=&quot;unit&quot;&gt;&lt;/div&gt;&#39;);
-                };
+<div class="highlighter-rouge"><pre class="highlight"><code>	M.render = {
+		renderColorBox : function() {
+			var container = document.getElementById('container');
 
-                container.innerHTML = htmlArray.join(&#39;&#39;);
+			var total = 10;
+			var htmlArray = [];
+			for (var i = 0; i &lt; total; i++) {
+				htmlArray.push('&lt;div class="unit"&gt;&lt;/div&gt;');
+			};
 
-                var units = document.getElementsByClassName(&#39;unit&#39;);
-                for (var length = units.length ,i = length - 1; i &gt;= 0; i--) {
-                    var baseNumber = Math.floor(Math.random()*3+2);
-                    var unit = units[i];
-                    var finalHeight = baseNumber*50+&#39;px&#39;;
-                    unit.style.height = finalHeight;
-                    unit.style.lineHeight = finalHeight;
-                    unit.style.backgroundColor = M.util.bgColorArray[i%10];     
-                }
-            },
+			container.innerHTML = htmlArray.join('');
 
-            renderImageBox: function() {
+			var units = document.getElementsByClassName('unit');
+			for (var length = units.length ,i = length - 1; i &gt;= 0; i--) {
+				var baseNumber = Math.floor(Math.random()*3+2);
+				var unit = units[i];
+				var finalHeight = baseNumber*50+'px';
+				unit.style.height = finalHeight;
+				unit.style.lineHeight = finalHeight;
+				unit.style.backgroundColor = M.util.bgColorArray[i%10];		
+			}
+		},
 
-                var imageContainer = document.getElementById(&#39;imageContainer&#39;);
+		renderImageBox: function() {
 
-                var containerHtmlArray = [];
-                for (var imgLen = M.util.imgArray.length,i = imgLen - 1; i &gt;= 0; i--) {
-                    containerHtmlArray.push(&#39;&lt;div class=&quot;unit&quot;&gt;&lt;img src=&quot;&#39; + M.util.imgArray[i]+&#39;&quot;&gt;&lt;/div&gt;&#39;);
-                };
-                imageContainer.innerHTML = containerHtmlArray.join(&#39;&#39;);
-            },
-            render: function() {
-                this.renderColorBox();
-                this.renderImageBox();
-            }
-        };
+			var imageContainer = document.getElementById('imageContainer');
 
-        M.render.render();
-</code></pre></figure>
+			var containerHtmlArray = [];
+			for (var imgLen = M.util.imgArray.length,i = imgLen - 1; i &gt;= 0; i--) {
+				containerHtmlArray.push('&lt;div class="unit"&gt;&lt;img src="' + M.util.imgArray[i]+'"&gt;&lt;/div&gt;');
+			};
+			imageContainer.innerHTML = containerHtmlArray.join('');
+		},
+		render: function() {
+			this.renderColorBox();
+			this.renderImageBox();
+		}
+	};
+
+	M.render.render(); ```
+</code></pre>
+</div>
+
 <p>效果如下：</p>
 
-<p><img src="https://ww1.sinaimg.cn/large/906cb9dbgw1f9ilrtrxm6j21kw0xutjw.jpg" alt="">
-<img src="https://ww1.sinaimg.cn/large/906cb9dbgw1f9ilsf934oj21kw0xuarc.jpg" alt=""></p>
+<p><img src="https://ww1.sinaimg.cn/large/906cb9dbgw1f9ilrtrxm6j21kw0xutjw.jpg" alt="" />
+<img src="https://ww1.sinaimg.cn/large/906cb9dbgw1f9ilsf934oj21kw0xuarc.jpg" alt="" /></p>
 
-<hr>
+<hr />
 
 <p>转自<a href="http://codepen.io/markahcn/pen/qJdHK">CSS3多列布局实现瀑布流</a></p>
 
@@ -183,7 +194,7 @@
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2016/06/css3-waterfall-layout/" data-title=CSS3多列布局实现瀑布流 data-url=https://wnglmng.com/2016/06/css3-waterfall-layout/></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2016/06/css3-waterfall-layout/" data-title=CSS3多列布局实现瀑布流 data-url=https://context-dependent.github.io/2016/06/css3-waterfall-layout/></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -213,14 +224,14 @@
                         <div class="card-title card-title--articleIfNoImage">Ajax 跨域访问</div>
                         <p class="card-description card-description--clamp-14">“ajax access origin resource”</p>
                         <p class="card-description card-article-preview">
-                            问题现象当出现跨域访问的时候， ajax 通常会报类似如下错误：XMLHttpRequest cannot load http://localhost:8000/simple/api/users/me/login. Response to preflight request doesn&#39;t pass access control check: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource. Origin &#39;http://localhost:8080&#39; is therefore not allowed access.解决办法Tomcat设置允...
+                            问题现象当出现跨域访问的时候， ajax 通常会报类似如下错误：  XMLHttpRequest cannot load http://localhost:8000/simple/api/users/me/login. Response to preflight request doesn’t pass access control check: No ‘Access-Control-Allow-Origin’ header is present on the requested resource. Origin ‘http://localhost:8080’ is therefore not allowed access.解决办法Tomcat设置允许跨域访问这里描述以Tomcat为W...
                         </p>
                         <p></p>
                     </div>
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
                             <div class="card-type is-notShownIfHover">2016-05-29</div>
-                            <div class="card-tag is-notShownIfHover">@WngLMng</div>
+                            <div class="card-tag is-notShownIfHover">@thomas mcmanus</div>
                             <div class="card-tag is-shownIfHover">
                                 
                                     code &nbsp;&nbsp;
@@ -253,7 +264,7 @@
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
                             <div class="card-type is-notShownIfHover">2016-06-18</div>
-                            <div class="card-tag is-notShownIfHover">@WngLMng</div>
+                            <div class="card-tag is-notShownIfHover">@thomas mcmanus</div>
                             <div class="card-tag is-shownIfHover">
                                 
                                     code &nbsp;&nbsp;
@@ -275,14 +286,14 @@
     <div id="footer" layout="rows center-left">
     <div id="end-mark">
         <div class="end-mark-icon"></div>
-        <p class="copyright">WngLMng' Blog © 2015&nbsp;&nbsp;·&nbsp;&nbsp;一个写代码的</p>
+        <p class="copyright">CONTEXT-DEPENDENT © 2017</p>
     </div>
     <div id="footer-links" self="right">
         <ul>
             <a href="#"><li class="wechat" target="_blank"></li></a>
-            <a href="mailto:wnglmng@gmail.com" target="_blank"><li class="mail"></li></a>
-            <a href="http://weibo.com/sunmoon1993" target="_blank"><li class="weibo"></li></a>
-            <a href="https://github.com/wnglmng" target="_blank"><li class="github"></li></a>
+            <a href="mailto:tomas.k.mcmanus@gmail.com" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/context-dependent" target="_blank"><li class="github"></li></a>
         </ul>
     </div>
 </div>

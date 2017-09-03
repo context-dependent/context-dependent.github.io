@@ -12,7 +12,7 @@
 
     <meta name="keywords" content="WngLMng, wangliming, 王立明">
     <meta name="author" content="WngLMng">
-    <meta name="description" content="嗨，我是王立明，一名来自黑龙江省鹤岗市的男生。<br/>现于无线生活（北京），从事互联网开发工作。">
+    <meta name="description" content="this is a bad blog">
 
     <meta property="og:site_name" content="WngLMng's Blog — 一个写代码的">
     <meta property="og:url" content="/">
@@ -25,14 +25,14 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
 
     <!-- Canonical SEO -->
-    <link rel="canonical" href="https://wnglmng.com/2016/08/async-open-new-tab-in-brower/">
-    <link rel="alternate" type="application/rss+xml" title="WngLMng's Blog" href="https://wnglmng.com/feed.xml">
+    <link rel="canonical" href="https://context-dependent.github.io/2016/08/async-open-new-tab-in-brower/">
+    <link rel="alternate" type="application/rss+xml" title="context dependent" href="https://context-dependent.github.io/feed.xml">
 </head>
 
 <body>
     <div id="nav" layout="row top-left">
     <div self="left">
-        <a href="/"><div class="logo logo-isNotVisIfMobile">WngLMng's Blog</div></a>
+        <a href="/"><div class="logo logo-isNotVisIfMobile">context dependent</div></a>
         <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
     </div>
     <div class="nav-isNotVisIfMobile">
@@ -70,8 +70,10 @@
 <p>在网上找了些资料，多多少少会有些问题，可能是我的姿势不对。</p>
 
 <p>最后实现代码如下：</p>
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">// open a new blank tab
-var createNewInterviewTab = window.open(&#39;about:blank&#39;, &#39;_blank&#39;);
+
+<p><code class="highlighter-rouge">javascript
+// open a new blank tab
+var createNewInterviewTab = window.open('about:blank', '_blank');
 $.ajax({
     // ...
 }).done(function(result) {
@@ -86,13 +88,14 @@ $.ajax({
         createNewInterviewTab.close();
     }
 });
-</code></pre></figure>
+</code></p>
+
 <p>到这里就结束了，就酱。</p>
 
 <p><strong>参考</strong></p>
 
 <ul>
-<li><a href="http://itindex.net/detail/52877-window.open-%E6%B5%8F%E8%A7%88%E5%99%A8">window.open被浏览器拦截的解决方案</a></li>
+  <li><a href="http://itindex.net/detail/52877-window.open-%E6%B5%8F%E8%A7%88%E5%99%A8">window.open被浏览器拦截的解决方案</a></li>
 </ul>
 
     </div>
@@ -106,7 +109,7 @@ $.ajax({
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2016/08/async-open-new-tab-in-brower/" data-title=浏览器中异步打开新标签页 data-url=https://wnglmng.com/2016/08/async-open-new-tab-in-brower/></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2016/08/async-open-new-tab-in-brower/" data-title=浏览器中异步打开新标签页 data-url=https://context-dependent.github.io/2016/08/async-open-new-tab-in-brower/></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -136,14 +139,14 @@ $.ajax({
                         <div class="card-title card-title--articleIfNoImage">CodeIgniter 钩子</div>
                         <p class="card-description card-description--clamp-14">“CodeIgniter Hooks”</p>
                         <p class="card-description card-article-preview">
-                            简介CodeIgniter 在启动的过程中，可以在某个地方让它自动的执行自己编写的函数，完成一个特定的功能，或者说成是脚本，这个时候就需要 CodeIgniter 中的钩子扩展。突然觉得和 Spring 中的 AOP 面向切面（Aspect）很类似，就是说在系统执行的什么时候会自动的执行其他功能代码，例如Before(前) 、After-returning(返回后) 、After-throwing(抛出后)、Introduction(引入)。启用钩子在 application/config/config.php 文件里找到 $config[&#39;enable_hooks&#39;] = FALSE,将 FALSE 改 TRUE ，启动钩子。$config[&#39;enable_h...
+                            简介CodeIgniter 在启动的过程中，可以在某个地方让它自动的执行自己编写的函数，完成一个特定的功能，或者说成是脚本，这个时候就需要 CodeIgniter 中的钩子扩展。突然觉得和 Spring 中的 AOP 面向切面（Aspect）很类似，就是说在系统执行的什么时候会自动的执行其他功能代码，例如Before(前) 、After-returning(返回后) 、After-throwing(抛出后)、Introduction(引入)。启用钩子      在 application/config/config.php 文件里找到 $config[‘enable_hooks’] = FALSE,将 FALSE 改 TRUE ，启动钩子。    php $config['enable...
                         </p>
                         <p></p>
                     </div>
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
                             <div class="card-type is-notShownIfHover">2016-07-09</div>
-                            <div class="card-tag is-notShownIfHover">@WngLMng</div>
+                            <div class="card-tag is-notShownIfHover">@thomas mcmanus</div>
                             <div class="card-tag is-shownIfHover">
                                 
                                     code &nbsp;&nbsp;
@@ -176,7 +179,7 @@ $.ajax({
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
                             <div class="card-type is-notShownIfHover">2016-12-23</div>
-                            <div class="card-tag is-notShownIfHover">@WngLMng</div>
+                            <div class="card-tag is-notShownIfHover">@thomas mcmanus</div>
                             <div class="card-tag is-shownIfHover">
                                 
                                     code &nbsp;&nbsp;
@@ -198,14 +201,14 @@ $.ajax({
     <div id="footer" layout="rows center-left">
     <div id="end-mark">
         <div class="end-mark-icon"></div>
-        <p class="copyright">WngLMng' Blog © 2015&nbsp;&nbsp;·&nbsp;&nbsp;一个写代码的</p>
+        <p class="copyright">CONTEXT-DEPENDENT © 2017</p>
     </div>
     <div id="footer-links" self="right">
         <ul>
             <a href="#"><li class="wechat" target="_blank"></li></a>
-            <a href="mailto:wnglmng@gmail.com" target="_blank"><li class="mail"></li></a>
-            <a href="http://weibo.com/sunmoon1993" target="_blank"><li class="weibo"></li></a>
-            <a href="https://github.com/wnglmng" target="_blank"><li class="github"></li></a>
+            <a href="mailto:tomas.k.mcmanus@gmail.com" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/context-dependent" target="_blank"><li class="github"></li></a>
         </ul>
     </div>
 </div>

@@ -8,15 +8,15 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/logo.png">
     <link rel="icon" type="image/png" href="/assets/images/logo.png">
 
-    <title>NFL stats 1</title>
+    <title>NFL STATS 1</title>
 
     <meta name="keywords" content="WngLMng, wangliming, 王立明">
     <meta name="author" content="WngLMng">
-    <meta name="description" content="嗨，我是王立明，一名来自黑龙江省鹤岗市的男生。<br/>现于无线生活（北京），从事互联网开发工作。">
+    <meta name="description" content="this is a bad blog">
 
     <meta property="og:site_name" content="WngLMng's Blog — 一个写代码的">
     <meta property="og:url" content="/">
-    <meta property="og:title" content="NFL stats 1">
+    <meta property="og:title" content="NFL STATS 1">
     <meta property="og:type" content="article">
     <meta property="og:description" content="This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. Ame...">
 
@@ -25,14 +25,14 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
 
     <!-- Canonical SEO -->
-    <link rel="canonical" href="https://wnglmng.com/2017/09/nfl-stats-1/">
-    <link rel="alternate" type="application/rss+xml" title="WngLMng's Blog" href="https://wnglmng.com/feed.xml">
+    <link rel="canonical" href="https://context-dependent.github.io/2017/09/nfl-stats-1/">
+    <link rel="alternate" type="application/rss+xml" title="context dependent" href="https://context-dependent.github.io/feed.xml">
 </head>
 
 <body>
     <div id="nav" layout="row top-left">
     <div self="left">
-        <a href="/"><div class="logo logo-isNotVisIfMobile">WngLMng's Blog</div></a>
+        <a href="/"><div class="logo logo-isNotVisIfMobile">context dependent</div></a>
         <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
     </div>
     <div class="nav-isNotVisIfMobile">
@@ -55,7 +55,7 @@
 
     <div id="content">
         <div class="container container--header">
-    <h1 class="h1--home-title">NFL stats 1</h1>
+    <h1 class="h1--home-title">NFL STATS 1</h1>
     <p>Scraping and cleaning data from Pro-Football-Reference.com</p>
 </div>
 
@@ -65,76 +65,125 @@
     <div class="container--text">
         <p>This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.</p>
 
-<p>Pro-Football-Reference has a wealth of freely available detailed historical data. We are going to use <code>rvest</code> and <code>dplyr</code>, part of the <code>tidyverse</code>, to scrape, clean, and concatenate that historical data.</p>
+<p>Pro-Football-Reference has a wealth of freely available detailed historical data. We are going to use <code class="highlighter-rouge">rvest</code> and <code class="highlighter-rouge">dplyr</code>, part of the <code class="highlighter-rouge">tidyverse</code>, to scrape, clean, and concatenate that historical data.</p>
 
-<h2>Scraping functions</h2>
+<h2 id="scraping-functions">Scraping functions</h2>
 
-<h3>Get one table from PFR</h3>
-<figure class="highlight"><pre><code class="language-r" data-lang="r">pfr_single &lt;- function(yr) {
-  url &lt;- sprintf(&quot;https://www.pro-football-reference.com/years/%d/fantasy.htm&quot;,
-                 yr)
+<p>For each table on their site, PFR offers the option of saving the data as a <code class="highlighter-rouge">.csv</code> file. While this would be congenial if we wanted to look at one or two years of data, doing it 24 times would be tedious and, for me at least, prone to errors. The <code class="highlighter-rouge">rvest</code> package makes scraping the tables automatically virtually painless. With the added benefit that the data can be reloaded from scratch in the event of a mistake, the benefits of building the <code class="highlighter-rouge">scrape_fantasy</code> function far outweigh the costs.</p>
 
-  cols &lt;- c(&quot;rank&quot;, &quot;name&quot;, &quot;team&quot;, &quot;pos&quot;, &quot;age&quot;, &quot;played&quot;, &quot;started&quot;,
-            &quot;pass_cmp&quot;, &quot;pass_att&quot;, &quot;pass_yds&quot;, &quot;pass_td&quot;, &quot;pass_int&quot;,
-            &quot;rush_att&quot;, &quot;rush_yds&quot;, &quot;rush_ypc&quot;, &quot;rush_td&quot;,
-            &quot;rec_tgt&quot;, &quot;rec_rec&quot;, &quot;rec_yds&quot;, &quot;rec_ypr&quot;, &quot;rec_td&quot;,
-            &quot;f_points&quot;, &quot;dkpt&quot;, &quot;fdpt&quot;, &quot;vbd&quot;, &quot;pos_rank&quot;, &quot;ov_rank&quot;)
-  print(url)
-  tbl_raw &lt;- (read_html(url) %&gt;%
-                html_table(header = FALSE))[[1]]
+<h3 id="get-one-table-from-pfr">Get one table from PFR</h3>
 
-  colnames(tbl_raw) &lt;- cols
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1">#' Scrape and clean data from profootballreference.com for a single
+#' returns a single tibble with a position, passing, rushing, receiving
+#' statistics for each player, along with age etc.
+#'
+#' @param yr integer -- integers between 1992 and 2016
+#'
+#' @return tbl_clean a tibble
+#' @export
+#'
+#' @examples
+#'
+</span><span class="n">pfr_single</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">yr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">url</span> <span class="o">&lt;-</span> <span class="n">sprintf</span><span class="p">(</span><span class="s2">"https://www.pro-football-reference.com/years/%d/fantasy.htm"</span><span class="p">,</span>
+                 <span class="n">yr</span><span class="p">)</span>
 
-  tbl_clean &lt;- tbl_raw %&gt;%
-    mutate(year = yr, rank = as.integer(rank)) %&gt;%
-    filter(complete.cases(.))
+  <span class="n">cols</span> <span class="o">&lt;-</span> <span class="n">c</span><span class="p">(</span><span class="s2">"rank"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"team"</span><span class="p">,</span> <span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"age"</span><span class="p">,</span> <span class="s2">"played"</span><span class="p">,</span> <span class="s2">"started"</span><span class="p">,</span>
+            <span class="s2">"pass_cmp"</span><span class="p">,</span> <span class="s2">"pass_att"</span><span class="p">,</span> <span class="s2">"pass_yds"</span><span class="p">,</span> <span class="s2">"pass_td"</span><span class="p">,</span> <span class="s2">"pass_int"</span><span class="p">,</span>
+            <span class="s2">"rush_att"</span><span class="p">,</span> <span class="s2">"rush_yds"</span><span class="p">,</span> <span class="s2">"rush_ypc"</span><span class="p">,</span> <span class="s2">"rush_td"</span><span class="p">,</span>
+            <span class="s2">"rec_tgt"</span><span class="p">,</span> <span class="s2">"rec_rec"</span><span class="p">,</span> <span class="s2">"rec_yds"</span><span class="p">,</span> <span class="s2">"rec_ypr"</span><span class="p">,</span> <span class="s2">"rec_td"</span><span class="p">,</span>
+            <span class="s2">"f_points"</span><span class="p">,</span> <span class="s2">"dkpt"</span><span class="p">,</span> <span class="s2">"fdpt"</span><span class="p">,</span> <span class="s2">"vbd"</span><span class="p">,</span> <span class="s2">"pos_rank"</span><span class="p">,</span> <span class="s2">"ov_rank"</span><span class="p">)</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+  <span class="n">tbl_raw</span> <span class="o">&lt;-</span> <span class="p">(</span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="o">%&gt;%</span>
+                <span class="n">html_table</span><span class="p">(</span><span class="n">header</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">))[[</span><span class="m">1</span><span class="p">]]</span>
 
-  return(tbl_clean)
-}
-</code></pre></figure>
-<h3>Apply pfr_single to a to a range of years</h3>
-<figure class="highlight"><pre><code class="language-r" data-lang="r">#&#39; Scrape and clean data from profootballreference.com for a range of years.
-#&#39; returns a single tibble with a position, passing, rushing, receiving
-#&#39; statistics for each player, along with age etc.
-#&#39;
-#&#39; @param yrs vector -- integers between 1993 and 2016
-#&#39; @param write logical -- whether or not to write the cleaned data to a csv in
-#&#39; the ./Data folder
-#&#39;
-#&#39; @return df_bound a tibble
-#&#39; @export fantasy_data_YRSTART_YREND.csv
-#&#39;
-#&#39; @examples
-#&#39;
-scrape_fantasy &lt;- function(yrs, write = TRUE) {
-  suppressWarnings(
-    df_bound &lt;- lapply(yrs, pfr_single) %&gt;% bind_rows %&gt;%
-      as_data_frame() %&gt;%
-      mutate_at(
-        .vars = vars(-name, -team, -pos),
-        .funs = as.numeric
-      ) %&gt;%
-      filter(pos != &quot;&quot;, !is.na(f_points))
-  )
+  <span class="n">colnames</span><span class="p">(</span><span class="n">tbl_raw</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">cols</span>
 
-  if(write) {
-    write_csv(df_bound,
-      sprintf(&quot;./Data/fantasy_data_%d_%d.csv&quot;, min(yrs), max(yrs)))
-  }
-  return(df_bound)
-}
-</code></pre></figure>
-<h2>Example plots</h2>
+  <span class="n">tbl_clean</span> <span class="o">&lt;-</span> <span class="n">tbl_raw</span> <span class="o">%&gt;%</span>
+    <span class="n">mutate</span><span class="p">(</span><span class="n">year</span> <span class="o">=</span> <span class="n">yr</span><span class="p">,</span> <span class="n">rank</span> <span class="o">=</span> <span class="n">as.integer</span><span class="p">(</span><span class="n">rank</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="n">filter</span><span class="p">(</span><span class="n">complete.cases</span><span class="p">(</span><span class="err">.</span><span class="p">))</span>
 
-<h3>Season point distributions by position</h3>
-<figure class="highlight"><pre><code class="language-r" data-lang="r">df_stats %&gt;%
-  filter(f_points &gt; 0) %&gt;%
-  ggplot(aes(f_points, fill = pos)) +
-  geom_histogram(binwidth = 1) +
-  ggthemes::scale_fill_wsj() +
-  facet_grid(pos~.)
-</code></pre></figure>
-<p><img src="https://wnglmng.com/assets/images/pos_points.png" alt="season points by position plot"></p>
+  <span class="k">return</span><span class="p">(</span><span class="n">tbl_clean</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="apply-pfrsingle-to-a-to-a-range-of-years">Apply pfr_single to a to a range of years</h3>
+<p>The following function takes a vector of years</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1">#' Scrape and clean data from profootballreference.com for a range of years.
+#' returns a single tibble with a position, passing, rushing, receiving
+#' statistics for each player, along with age etc.
+#'
+#' @param yrs vector -- integers between 1993 and 2016
+#' @param write logical -- whether or not to write the cleaned data to a csv in
+#' the ./Data folder
+#'
+#' @return df_bound a tibble
+#' @export fantasy_data_YRSTART_YREND.csv
+#'
+#' @examples
+#'
+</span><span class="n">scrape_fantasy</span> <span class="o">&lt;-</span> <span class="k">function</span><span class="p">(</span><span class="n">yrs</span><span class="p">,</span> <span class="n">write</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">suppressWarnings</span><span class="p">(</span>
+    <span class="n">df_bound</span> <span class="o">&lt;-</span> <span class="n">lapply</span><span class="p">(</span><span class="n">yrs</span><span class="p">,</span> <span class="n">pfr_single</span><span class="p">)</span> <span class="o">%&gt;%</span>
+      <span class="n">bind_rows</span><span class="p">()</span> <span class="o">%&gt;%</span>
+      <span class="n">as_data_frame</span><span class="p">()</span> <span class="o">%&gt;%</span>
+      <span class="n">mutate_at</span><span class="p">(</span>
+        <span class="n">.vars</span> <span class="o">=</span> <span class="n">vars</span><span class="p">(</span><span class="o">-</span><span class="n">name</span><span class="p">,</span> <span class="o">-</span><span class="n">team</span><span class="p">,</span> <span class="o">-</span><span class="n">pos</span><span class="p">),</span>
+        <span class="n">.funs</span> <span class="o">=</span> <span class="n">as.numeric</span>
+      <span class="p">)</span> <span class="o">%&gt;%</span>
+      <span class="n">filter</span><span class="p">(</span><span class="n">pos</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">,</span> <span class="o">!</span><span class="n">is.na</span><span class="p">(</span><span class="n">f_points</span><span class="p">))</span>
+  <span class="p">)</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">write</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">write_csv</span><span class="p">(</span><span class="n">df_bound</span><span class="p">,</span>
+      <span class="n">sprintf</span><span class="p">(</span><span class="s2">"./Data/fantasy_data_%d_%d.csv"</span><span class="p">,</span> <span class="n">min</span><span class="p">(</span><span class="n">yrs</span><span class="p">),</span> <span class="n">max</span><span class="p">(</span><span class="n">yrs</span><span class="p">)))</span>
+  <span class="p">}</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">df_bound</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="example-plots">Example plots</h2>
+
+<p>We use the <code class="highlighter-rouge">scrape_fantasy</code> function defined above to collect season totals for each offensive player for the seasons between 1992 and 2016.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df_stats</span> <span class="o">&lt;-</span> <span class="n">scrape_fantasy</span><span class="p">(</span><span class="n">yrs</span> <span class="o">=</span> <span class="m">1992</span><span class="o">:</span><span class="m">2016</span><span class="p">)</span></code></pre></figure>
+
+<p>Now that the data are all together, cleaned, and correctly typed, <code class="highlighter-rouge">ggplot2</code> offers a set of tools for quickly making exploratory visualizations. The following plots are not particularly refined, but they are a pretty good representation of the kind of thing that I would do when approaching any new data set “in the wild”, so to speak.</p>
+
+<h3 id="total-point-distributions-by-position">Total point distributions by position</h3>
+
+<p>The facetted histogram (or density plot) is a favourite tool of mine for identifying differences among groups.</p>
+
+<p>code</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df_stats</span> <span class="o">%&gt;%</span>
+  <span class="n">filter</span><span class="p">(</span><span class="n">f_points</span> <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">f_points</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">pos</span><span class="p">))</span> <span class="o">+</span>
+  <span class="n">geom_histogram</span><span class="p">(</span><span class="n">binwidth</span> <span class="o">=</span> <span class="m">1</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">ggthemes</span><span class="o">::</span><span class="n">scale_fill_wsj</span><span class="p">()</span> <span class="o">+</span>
+  <span class="n">facet_grid</span><span class="p">(</span><span class="n">pos</span><span class="o">~</span><span class="err">.</span><span class="p">)</span></code></pre></figure>
+
+<p>plot
+<img src="https://context-dependent.github.io/assets/images/pos_points.png" alt="season points by position plot" /></p>
+
+<h3 id="total-point-concentrations-by-age-with-player-count-bars">Total point concentrations by age (with player count bars)</h3>
+
+<p>Jitter plots are imprecise by nature, but I like them when trying to get a sense of a continuous variable’s distribution as a function of a discrete variable, where a regular scatter plot would be unclear because many points would be stacked up on one another. I favour them over violin plots and boxplots because I find that those can obfuscate potentially interesting facts of the distributions in question.</p>
+
+<p>This plot also includes bars behind the jittered points that indicate the number of players that have played a season between 1992 and 2016 at the given age and position. Therefore the y-axis of each facet represents both fantasy points and number of players at the position.</p>
+
+<p>code</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df_stats</span> <span class="o">%&gt;%</span>
+  <span class="n">filter</span><span class="p">(</span><span class="n">f_points</span> <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">age</span><span class="p">))</span> <span class="o">+</span>
+  <span class="n">geom_bar</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="m">0.4</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_jitter</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">f_points</span><span class="p">,</span> <span class="n">colour</span> <span class="o">=</span> <span class="n">pos</span><span class="p">),</span> <span class="n">alpha</span> <span class="o">=</span> <span class="m">0.1</span><span class="p">)</span>
+  <span class="n">ggthemes</span><span class="o">::</span><span class="n">scale_color_wsj</span><span class="p">()</span> <span class="o">+</span>
+  <span class="n">facet_grid</span><span class="p">(</span><span class="n">pos</span><span class="o">~</span><span class="err">.</span><span class="p">)</span></code></pre></figure>
+
+<p>plot</p>
+
+<p><img src="https://context-dependent.github.io/assets/images/age_points.png" alt="season points by age" /></p>
 
     </div>
 </div>
@@ -147,7 +196,7 @@ scrape_fantasy &lt;- function(yrs, write = TRUE) {
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2017/09/nfl-stats-1/" data-title=NFL stats 1 data-url=https://wnglmng.com/2017/09/nfl-stats-1/></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2017/09/nfl-stats-1/" data-title=NFL STATS 1 data-url=https://context-dependent.github.io/2017/09/nfl-stats-1/></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -186,7 +235,7 @@ scrape_fantasy &lt;- function(yrs, write = TRUE) {
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
                             <div class="card-type is-notShownIfHover">2017-03-15</div>
-                            <div class="card-tag is-notShownIfHover">@WngLMng</div>
+                            <div class="card-tag is-notShownIfHover">@thomas mcmanus</div>
                             <div class="card-tag is-shownIfHover">
                                 
                                     code &nbsp;&nbsp;
@@ -210,14 +259,14 @@ scrape_fantasy &lt;- function(yrs, write = TRUE) {
     <div id="footer" layout="rows center-left">
     <div id="end-mark">
         <div class="end-mark-icon"></div>
-        <p class="copyright">WngLMng' Blog © 2015&nbsp;&nbsp;·&nbsp;&nbsp;一个写代码的</p>
+        <p class="copyright">CONTEXT-DEPENDENT © 2017</p>
     </div>
     <div id="footer-links" self="right">
         <ul>
             <a href="#"><li class="wechat" target="_blank"></li></a>
-            <a href="mailto:wnglmng@gmail.com" target="_blank"><li class="mail"></li></a>
-            <a href="http://weibo.com/sunmoon1993" target="_blank"><li class="weibo"></li></a>
-            <a href="https://github.com/wnglmng" target="_blank"><li class="github"></li></a>
+            <a href="mailto:tomas.k.mcmanus@gmail.com" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/context-dependent" target="_blank"><li class="github"></li></a>
         </ul>
     </div>
 </div>
