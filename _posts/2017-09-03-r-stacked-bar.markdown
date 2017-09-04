@@ -1,22 +1,21 @@
 ---
 layout:         post
-title:          R TUTORIAL 1
-subtitle:       stacked bar charts
-card-image:     https://context-dependent.gitbub.io/assets/images/age_points.png
+title:          STACKED BARS
+subtitle:       Use dplyr, tidyr, and ggplot2 to quickly make a stacked and facetted bar chart
+card-image:     https://context-dependent.github.io/assets/images/stacked_bar.png
 date:           2017-09-03 14:14:00
 tags:           code R ggplot2 tidyverse
 post-card-type: image
 ---
-{% include scripts.html %}
 
 ## Import Packages
 
 Install these packages if you don't have them already
 
-{% highlight R %}
+```r
 library(tidyverse)
 library(ggthemes)
-{% endhighlight %}
+```
 
 ## Make fake game data
 

@@ -6,20 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/logo.png">
-    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="icon" type="image/png" href="/assets/images/pos_points.png">
 
-    <title>R TUTORIAL 1</title>
+    <title>STACKED BARS</title>
 
-    <meta name="keywords" content="WngLMng, wangliming, 王立明">
-    <meta name="author" content="WngLMng">
+    <meta name="keywords" content="thomas mcmanus, context-dependent, R">
+    <meta name="author" content="context-dependent">
     <meta name="description" content="This is a bad blog. Don't read thi blog
 ">
 
-    <meta property="og:site_name" content="WngLMng's Blog — 一个写代码的">
+    <meta property="og:site_name" content="context-dependent">
     <meta property="og:url" content="/">
-    <meta property="og:title" content="R TUTORIAL 1">
+    <meta property="og:title" content="STACKED BARS">
     <meta property="og:type" content="article">
-    <meta property="og:description" content="">
+    <meta property="og:description" content="Import Packages">
 
     <!--   Core CSS Files   -->
     <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
@@ -56,27 +56,22 @@
 
     <div id="content">
         <div class="container container--header">
-    <h1 class="h1--home-title">R TUTORIAL 1</h1>
-    <p>stacked bar charts</p>
+    <h1 class="h1--home-title">STACKED BARS</h1>
+    <p>Use dplyr, tidyr, and ggplot2 to quickly make a stacked and facetted bar chart</p>
 </div>
 
         <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
 
 <div class="page-wrapper">
     <div class="container--text">
-        <!--   Core JS Files   -->
-<script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
-
-<script src="//cdn.bootcss.com/mixitup/2.1.11/jquery.mixitup.min.js"></script>
-
-<script src="/assets/js/main.js"></script>
-
-<h2 id="import-packages">Import Packages</h2>
+        <h2 id="import-packages">Import Packages</h2>
 
 <p>Install these packages if you don’t have them already</p>
 
-<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
-</span><span class="n">library</span><span class="p">(</span><span class="n">ggthemes</span><span class="p">)</span></code></pre></figure>
+<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggthemes</span><span class="p">)</span><span class="w">
+</span></code></pre>
+</div>
 
 <h2 id="make-fake-game-data">Make fake game data</h2>
 
@@ -150,7 +145,7 @@ we are asking ggplot to make 4 decisions: X-axis values (game), Y-axis values
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2017/09/03/r-stacked-bar.html" data-title=R TUTORIAL 1 data-url=http://localhost:4000/2017/09/03/r-stacked-bar.html></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2017/09/03/r-stacked-bar.html" data-title=STACKED BARS data-url=http://localhost:4000/2017/09/03/r-stacked-bar.html></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -174,15 +169,17 @@ we are asking ggplot to make 4 decisions: X-axis values (game), Y-axis values
         
         
         
+        
             <a href="/2017/09/01/nfl-stats-1.html">
-                <div class="card card--article not-visible">
+                <div class="card card--article not-visible" >
                     <div class="card-body">
-                        <div class="card-title card-title--articleIfNoImage">NFL STATS 1</div>
-                        <p class="card-description card-description--clamp-14">“Scraping and cleaning data from Pro-Football-Reference.com”</p>
-                        <p class="card-description card-article-preview">
-                            This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined...
-                        </p>
-                        <p></p>
+                        <div class="card-title">HTML TABLES</div>
+                        <div class="card-description card-description--clamp-0">
+                            This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to...
+                        </div>
+                    </div>
+                    <div class="card-hero">
+                        <div class="card-image card-image--size-185" data-url="https://context-dependent.github.io/assets/images/age_points.png"></div>
                     </div>
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
@@ -204,9 +201,8 @@ we are asking ggplot to make 4 decisions: X-axis values (game), Y-axis values
                             <div class="card-logo is-shownIfHover" self="right"></div>
                         </div>
                     </div>
-                </div>
+                 </div>
             </a>
-        
         
         
 

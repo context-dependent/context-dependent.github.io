@@ -285,14 +285,16 @@ body #nav {
 
 .card-image{
 	width: 100%;
-	height: 140px;
+	height: 200px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .card-image--size-185{
-	height: 140px;
+	height: 200px;
+	width: 100%;
+	margin-top: 25px;
 }
 
 .card-play {
@@ -1010,7 +1012,7 @@ keyframes inf-bounce {
 }
 .h1--home-title {
 	margin-bottom: 16px;
-	font-family: '-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB",STHeiti,"Microsoft YaHei","Microsoft JhengHei","Source Han Sans SC","Noto Sans CJK SC","Source Han Sans CN","Noto Sans SC","Source Han Sans TC","Noto Sans CJK TC","WenQuanYi Micro Hei",SimSun,sans-serif';
+	font-family: Consolas, Menlo, Monaco, Lucida Console;
 	font-weight: 700;
 }
 h1 {

@@ -1,11 +1,11 @@
 ---
 layout:         post
-title:          NFL STATS 1
-subtitle:       Scraping and cleaning data from Pro-Football-Reference.com
-card-image:     /assets/images/pos_points.png
+title:          HTML TABLES
+subtitle:       Scrape historical NFL data from Pro-Football-Reference.com using rvest and dplyr.
+card-image:     https://context-dependent.github.io/assets/images/age_points.png
 date:           2017-09-01 14:14:00
 tags:           code R ggplot2 tidyverse rvest
-post-card-type: article
+post-card-type: image
 ---
 
 This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.

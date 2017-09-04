@@ -1,17 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-09-04T15:10:21-04:00</updated><id>http://localhost:4000/</id><title type="html">context dependent</title><subtitle>This is a bad blog. Don't read thi blog
-</subtitle><entry><title type="html">R TUTORIAL 1</title><link href="http://localhost:4000/2017/09/03/r-stacked-bar.html" rel="alternate" type="text/html" title="R TUTORIAL 1" /><published>2017-09-03T10:14:00-04:00</published><updated>2017-09-03T10:14:00-04:00</updated><id>http://localhost:4000/2017/09/03/r-stacked-bar</id><content type="html" xml:base="http://localhost:4000/2017/09/03/r-stacked-bar.html">&lt;!--   Core JS Files   --&gt;
-&lt;script src=&quot;//cdn.bootcss.com/jquery/2.1.0/jquery.min.js&quot;&gt;&lt;/script&gt;
-
-&lt;script src=&quot;//cdn.bootcss.com/mixitup/2.1.11/jquery.mixitup.min.js&quot;&gt;&lt;/script&gt;
-
-&lt;script src=&quot;/assets/js/main.js&quot;&gt;&lt;/script&gt;
-
-&lt;h2 id=&quot;import-packages&quot;&gt;Import Packages&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-09-04T16:21:24-04:00</updated><id>http://localhost:4000/</id><title type="html">context dependent</title><subtitle>This is a bad blog. Don't read thi blog
+</subtitle><entry><title type="html">STACKED BARS</title><link href="http://localhost:4000/2017/09/03/r-stacked-bar.html" rel="alternate" type="text/html" title="STACKED BARS" /><published>2017-09-03T10:14:00-04:00</published><updated>2017-09-03T10:14:00-04:00</updated><id>http://localhost:4000/2017/09/03/r-stacked-bar</id><content type="html" xml:base="http://localhost:4000/2017/09/03/r-stacked-bar.html">&lt;h2 id=&quot;import-packages&quot;&gt;Import Packages&lt;/h2&gt;
 
 &lt;p&gt;Install these packages if you don’t have them already&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tidyverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggthemes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tidyverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggthemes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;h2 id=&quot;make-fake-game-data&quot;&gt;Make fake game data&lt;/h2&gt;
 
@@ -72,7 +67,7 @@ we are asking ggplot to make 4 decisions: X-axis values (game), Y-axis values
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/images/stacked_bar.png&quot; alt=&quot;points per player per game&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="code" /><category term="R" /><category term="ggplot2" /><category term="tidyverse" /><summary type="html"></summary></entry><entry><title type="html">NFL STATS 1</title><link href="http://localhost:4000/2017/09/01/nfl-stats-1.html" rel="alternate" type="text/html" title="NFL STATS 1" /><published>2017-09-01T10:14:00-04:00</published><updated>2017-09-01T10:14:00-04:00</updated><id>http://localhost:4000/2017/09/01/nfl-stats-1</id><content type="html" xml:base="http://localhost:4000/2017/09/01/nfl-stats-1.html">&lt;p&gt;This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/images/stacked_bar.png&quot; alt=&quot;points per player per game&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="code" /><category term="R" /><category term="ggplot2" /><category term="tidyverse" /><summary type="html">Import Packages</summary></entry><entry><title type="html">HTML TABLES</title><link href="http://localhost:4000/2017/09/01/nfl-stats-1.html" rel="alternate" type="text/html" title="HTML TABLES" /><published>2017-09-01T10:14:00-04:00</published><updated>2017-09-01T10:14:00-04:00</updated><id>http://localhost:4000/2017/09/01/nfl-stats-1</id><content type="html" xml:base="http://localhost:4000/2017/09/01/nfl-stats-1.html">&lt;p&gt;This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.&lt;/p&gt;
 
 &lt;p&gt;Pro-Football-Reference has a wealth of freely available detailed historical data. We are going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;rvest&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;dplyr&lt;/code&gt;, part of the &lt;code class=&quot;highlighter-rouge&quot;&gt;tidyverse&lt;/code&gt;, to scrape, clean, and concatenate that historical data.&lt;/p&gt;
 
