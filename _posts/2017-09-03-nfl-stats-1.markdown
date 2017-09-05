@@ -8,17 +8,6 @@ tags:           code R ggplot2 tidyverse rvest
 post-card-type: image
 ---
 
-<div class="datatable-begin"></div>
-
-Food    | Description                           | Category | Sample type
-------- | ------------------------------------- | -------- | -----------
-Apples  | A small, somewhat round ...           | Fruit    | Fuji
-Bananas | A long and curved, often-yellow ...   | Fruit    | Snow
-Kiwis   | A small, hairy-skinned sweet ...      | Fruit    | Golden
-Oranges | A spherical, orange-colored sweet ... | Fruit    | Navel
-
-<div class="datatable-end"></div>
-
 This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.
 
 Pro-Football-Reference has a wealth of freely available detailed historical data. We are going to use `rvest` and `dplyr`, part of the `tidyverse`, to scrape, clean, and concatenate that historical data.
