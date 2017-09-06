@@ -19,7 +19,7 @@
     <meta property="og:url" content="/">
     <meta property="og:title" content="HTML TABLES">
     <meta property="og:type" content="article">
-    <meta property="og:description" content="This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. Ame...">
+    <meta property="og:description" content="This is the first in a series of articles that will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and...">
 
     <!--   Core CSS Files   -->
     <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
@@ -64,15 +64,25 @@
 
 <div class="page-wrapper">
     <div class="container--text">
-        <p>This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.</p>
+        <p>This is the first in a series of articles that will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. Pro-Football-Reference.com has a wealth of freely available detailed historical data. We are going to use <code class="highlighter-rouge">rvest</code> and <code class="highlighter-rouge">dplyr</code>, part of the <code class="highlighter-rouge">tidyverse</code>, to scrape, clean, and concatenate that historical data.</p>
 
-<p>Pro-Football-Reference has a wealth of freely available detailed historical data. We are going to use <code class="highlighter-rouge">rvest</code> and <code class="highlighter-rouge">dplyr</code>, part of the <code class="highlighter-rouge">tidyverse</code>, to scrape, clean, and concatenate that historical data.</p>
+<h2 id="why-should-we-automate-this">Why should we automate this?</h2>
 
-<h2 id="scraping-functions">Scraping functions</h2>
+<p>For each table on their site, PFR offers the option of saving the data as a <code class="highlighter-rouge">.csv</code> file. While this would be congenial if we wanted to look at one or two years of data, doing it 24 times would be tedious and, for me at least, prone to errors. The <code class="highlighter-rouge">rvest</code> package makes scraping the tables automatically virtually painless. With the added benefit that the data can be reloaded from scratch in the event of a mistake, the benefits of automating the data collection process here are clearly greater than the costs.</p>
 
-<p>For each table on their site, PFR offers the option of saving the data as a <code class="highlighter-rouge">.csv</code> file. While this would be congenial if we wanted to look at one or two years of data, doing it 24 times would be tedious and, for me at least, prone to errors. The <code class="highlighter-rouge">rvest</code> package makes scraping the tables automatically virtually painless. With the added benefit that the data can be reloaded from scratch in the event of a mistake, the benefits of building the <code class="highlighter-rouge">scrape_fantasy</code> function far outweigh the costs.</p>
+<p>I’m defining two functions below. The first gets a single year’s table from PFR, and the second applies that function to a vector of years, concatenating the output data and finishing the cleaning process.</p>
 
 <h3 id="get-one-table-from-pfr">Get one table from PFR</h3>
+
+<p>The key components of the pfr_single function defined below are numbered. The following list refers to those numbers, describing what exactly is going on at each stage.</p>
+
+<ol>
+  <li>using the sprintf function, the url where the fantasy football data corresponding to the desired year are stored is assigned to <code class="highlighter-rouge">url</code>.</li>
+  <li>the column names of the scraped html table are spread across two rows, and in general pretty messy, so a new set of column names is assigned to <code class="highlighter-rouge">col</code>.</li>
+  <li><code class="highlighter-rouge">read_html</code> reads all of the html at the supplied url and returns it as raw text.</li>
+  <li><code class="highlighter-rouge">html_table</code> converts each table in the raw text returned by <code class="highlighter-rouge">read_html</code> to a <code class="highlighter-rouge">data.frame</code> and returns that as a list. We want the first (and in this case, only) table in the list.</li>
+  <li>we’ve scraped the data and converted it into a data frame, but we read it in without headers, so the original column names in the html table are now parts of in the data. PFR also seeds headers throughout its html tables. To get rid of these, we convert the rank variable to an integer, which replaces any non-numeric values with NA, then we filter out cases with NA values and return the clean table.</li>
+</ol>
 
 <div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="cd">#' Scrape and clean data from profootballreference.com for a single
 #' returns a single tibble with a position, passing, rushing, receiving
@@ -87,23 +97,23 @@
 #'
 </span><span class="n">pfr_single</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">yr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
   </span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sprintf</span><span class="p">(</span><span class="s2">"https://www.pro-football-reference.com/years/%d/fantasy.htm"</span><span class="p">,</span><span class="w">
-                 </span><span class="n">yr</span><span class="p">)</span><span class="w">
-
+                 </span><span class="n">yr</span><span class="p">)</span><span class="w"> </span><span class="c1"># 1.
+</span><span class="w">
   </span><span class="n">cols</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"rank"</span><span class="p">,</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span><span class="w"> </span><span class="s2">"team"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pos"</span><span class="p">,</span><span class="w"> </span><span class="s2">"age"</span><span class="p">,</span><span class="w"> </span><span class="s2">"played"</span><span class="p">,</span><span class="w"> </span><span class="s2">"started"</span><span class="p">,</span><span class="w">
             </span><span class="s2">"pass_cmp"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pass_att"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pass_yds"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pass_td"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pass_int"</span><span class="p">,</span><span class="w">
             </span><span class="s2">"rush_att"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rush_yds"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rush_ypc"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rush_td"</span><span class="p">,</span><span class="w">
             </span><span class="s2">"rec_tgt"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rec_rec"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rec_yds"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rec_ypr"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rec_td"</span><span class="p">,</span><span class="w">
-            </span><span class="s2">"f_points"</span><span class="p">,</span><span class="w"> </span><span class="s2">"dkpt"</span><span class="p">,</span><span class="w"> </span><span class="s2">"fdpt"</span><span class="p">,</span><span class="w"> </span><span class="s2">"vbd"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pos_rank"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ov_rank"</span><span class="p">)</span><span class="w">
-  </span><span class="n">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">
-  </span><span class="n">tbl_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
-                </span><span class="n">html_table</span><span class="p">(</span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">))[[</span><span class="m">1</span><span class="p">]]</span><span class="w">
-
+            </span><span class="s2">"f_points"</span><span class="p">,</span><span class="w"> </span><span class="s2">"dkpt"</span><span class="p">,</span><span class="w"> </span><span class="s2">"fdpt"</span><span class="p">,</span><span class="w"> </span><span class="s2">"vbd"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pos_rank"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ov_rank"</span><span class="p">)</span><span class="w"> </span><span class="c1"># 2.
+</span><span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">
+  </span><span class="n">tbl_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># 3.
+</span><span class="w">                </span><span class="n">html_table</span><span class="p">(</span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">))[[</span><span class="m">1</span><span class="p">]]</span><span class="w"> </span><span class="c1"># 4.
+</span><span class="w">
   </span><span class="n">colnames</span><span class="p">(</span><span class="n">tbl_raw</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cols</span><span class="w">
 
   </span><span class="n">tbl_clean</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tbl_raw</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
     </span><span class="n">mutate</span><span class="p">(</span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yr</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">rank</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
-    </span><span class="n">filter</span><span class="p">(</span><span class="n">complete.cases</span><span class="p">(</span><span class="n">.</span><span class="p">))</span><span class="w">
-
+    </span><span class="n">filter</span><span class="p">(</span><span class="n">complete.cases</span><span class="p">(</span><span class="n">.</span><span class="p">))</span><span class="w"> </span><span class="c1"># 5.
+</span><span class="w">
   </span><span class="nf">return</span><span class="p">(</span><span class="n">tbl_clean</span><span class="p">)</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>

@@ -8,18 +8,25 @@ tags:           code R ggplot2 tidyverse rvest
 post-card-type: image
 ---
 
-This series will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. American football is particularly suited to analysis because of its stop / reset / start structure, the singular focus of every play (one pass, one run, one kick etc.), and the strictly defined, narrow roles played by each man on the field.
-
-Pro-Football-Reference has a wealth of freely available detailed historical data. We are going to use `rvest` and `dplyr`, part of the `tidyverse`, to scrape, clean, and concatenate that historical data.
+This is the first in a series of articles that will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. Pro-Football-Reference.com has a wealth of freely available detailed historical data. We are going to use `rvest` and `dplyr`, part of the `tidyverse`, to scrape, clean, and concatenate that historical data.
 
 
-## Scraping functions
+## Why should we automate this?
 
+For each table on their site, PFR offers the option of saving the data as a `.csv` file. While this would be congenial if we wanted to look at one or two years of data, doing it 24 times would be tedious and, for me at least, prone to errors. The `rvest` package makes scraping the tables automatically virtually painless. With the added benefit that the data can be reloaded from scratch in the event of a mistake, the benefits of automating the data collection process here are clearly greater than the costs.
 
-For each table on their site, PFR offers the option of saving the data as a `.csv` file. While this would be congenial if we wanted to look at one or two years of data, doing it 24 times would be tedious and, for me at least, prone to errors. The `rvest` package makes scraping the tables automatically virtually painless. With the added benefit that the data can be reloaded from scratch in the event of a mistake, the benefits of building the `scrape_fantasy` function far outweigh the costs.  
+I'm defining two functions below. The first gets a single year's table from PFR, and the second applies that function to a vector of years, concatenating the output data and finishing the cleaning process.
 
 
 ### Get one table from PFR
+
+The key components of the pfr_single function defined below are numbered. The following list refers to those numbers, describing what exactly is going on at each stage.
+
+  1. using the sprintf function, the url where the fantasy football data corresponding to the desired year are stored is assigned to `url`.
+  2. the column names of the scraped html table are spread across two rows, and in general pretty messy, so a new set of column names is assigned to `col`.
+  3. `read_html` reads all of the html at the supplied url and returns it as raw text.
+  4. `html_table` converts each table in the raw text returned by `read_html` to a `data.frame` and returns that as a list. We want the first (and in this case, only) table in the list.
+  5. we've scraped the data and converted it into a data frame, but we read it in without headers, so the original column names in the html table are now parts of in the data. PFR also seeds headers throughout its html tables. To get rid of these, we convert the rank variable to an integer, which replaces any non-numeric values with NA, then we filter out cases with NA values and return the clean table.
 
 
 ```r
@@ -36,22 +43,22 @@ For each table on their site, PFR offers the option of saving the data as a `.cs
 #'
 pfr_single <- function(yr) {
   url <- sprintf("https://www.pro-football-reference.com/years/%d/fantasy.htm",
-                 yr)
+                 yr) # 1.
 
   cols <- c("rank", "name", "team", "pos", "age", "played", "started",
             "pass_cmp", "pass_att", "pass_yds", "pass_td", "pass_int",
             "rush_att", "rush_yds", "rush_ypc", "rush_td",
             "rec_tgt", "rec_rec", "rec_yds", "rec_ypr", "rec_td",
-            "f_points", "dkpt", "fdpt", "vbd", "pos_rank", "ov_rank")
+            "f_points", "dkpt", "fdpt", "vbd", "pos_rank", "ov_rank") # 2.
   print(url)
-  tbl_raw <- (read_html(url) %>%
-                html_table(header = FALSE))[[1]]
+  tbl_raw <- (read_html(url) %>% # 3.
+                html_table(header = FALSE))[[1]] # 4.
 
   colnames(tbl_raw) <- cols
 
   tbl_clean <- tbl_raw %>%
     mutate(year = yr, rank = as.integer(rank)) %>%
-    filter(complete.cases(.))
+    filter(complete.cases(.)) # 5.
 
   return(tbl_clean)
 }
