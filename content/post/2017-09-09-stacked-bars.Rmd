@@ -1,0 +1,90 @@
+---
+title: STACKED BARS
+author: tkm
+date: '2017-09-09'
+slug: stacked-bars
+categories:
+  - R
+tags:
+  - ggplot2
+  - sports
+  - hockey
+summary: "When first presented with the syntax of `ggplot2`, I found it so alien to the way that I had previously thought of making plots that my brain basically rejected it. Coming from other plotting functions in R, other statistical programs, or excel, its understandable that people would be intimidated and confused."
+---
+When first presented with the syntax of `ggplot2`, I found it so alien to the way that I had previously thought of making plots that my brain basically rejected it. Coming from other plotting functions in R, other statistical programs, or excel, its understandable that people would be intimidated and confused. Part of this is the layering system that the package uses to draw the plot. You set up an object, mapping data to aesthetic parameters, and then use functions (geoms) to interpret the mapped data in a specific way. In and of itself, this was confusing to me, but I think the bigger challenge was understanding the type of data `ggplot2` wants to deal with, namely, "tidy" data. 
+
+There are lots of resources out there that explain in comprehensive and magnificient detail what it means for data to be "tidy", but for our purposes here, we will stick to the simple idea that each column should be a variable, and each row should be an observation. A friend of mine recently asked me how to use ggplot to make a stacked bar chart of points per game, coloured by their source (goal / assist), for each player on a given team. 
+
+Before we go any further, install these packages if you don't have them already, and load them using `library`.
+
+```{r, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggthemes)
+library(tibble)
+```
+
+## Make fake game data
+
+This is a hypothetical example of hockey data structured in the same way as the data in question. There were more variables present in that data, and more players, but these are all we need to demonstrate the mechanics involved. 
+
+```{r}
+stats <- tribble(
+    ~player, ~game, ~assists, ~goals,
+   "Ondrej",     1,        2,      1,
+   "Ondrej",     2,        0,      2,
+   "Ondrej",     3,        4,      0,
+  "Mateosh",     1,        2,      2,
+  "Mateosh",     2,        6,      1,
+  "Mateosh",     3,        1,      2,
+   "Daniel",     1,        2,      0,
+   "Daniel",     2,        0,      1,
+   "Daniel",     3,        0,      0
+)
+
+stats
+```
+
+## Reshape the points and assists columns
+
+Points per player per game will determine the height of the bars. Right now, the points variable is spread out across the assists and goals columns. Before plotting, we need to `gather` the two columns together, which will give us a column that tells us how many points were scored per player per game per point source, along with a column that indicates whether or not those points were scored with goals or assists. 
+
+the `gather` function takes multiple columns and turns them into a key
+column, which uses the input column names as values, an a value
+column, which uses the input column values as values. In this case,
+I'm naming the key column `point_source`, and the value column `points`.
+After reshaping, we're left with a row for each player, game, and point_source.
+
+
+```{r}
+stats_long <- stats %>%
+  gather(point_source, points, assists:goals)
+
+stats_long
+```
+
+## Plot results for each player
+
+These columns make sense if you think about the way that ggplot works.
+ggplot wants exactly one decision per one column of input data. We want
+a bar plot for each player, with a bar that represents thse number of points
+that they scored in a game, coloured by the point source. n this instance,
+we are asking ggplot to make 4 decisions: X-axis values (game), Y-axis values
+(points), bar fill colour (point_source), and plot facets (player).
+
+```{r}
+stats_long %>%
+  ggplot(aes(game, points, fill = point_source)) + #1. initial mapping
+    geom_bar(stat = "identity") +                  #2. add bars points ~ game
+    facet_wrap(~player) +                          #3. split plots on player
+  # The following two lines change the look of the plot
+  # there are other scales and themes to choose from, these
+  # are just two that I like
+    ggthemes::scale_fill_wsj() +
+    ggthemes::theme_hc()
+```
+
+
+
+

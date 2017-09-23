@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.26" />
+
+
+<title>HTML TABLES - context-dependent</title>
+<meta property="og:title" content="HTML TABLES - context-dependent">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.11.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">5 min read</span>
+    
+
+    <h1 class="article-title">HTML TABLES</h1>
+
+    
+    <span class="article-date">2017/09/09</span>
+    
+
+    <div class="article-content">
+      <p>This is the first in a series of articles that will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. Pro-Football-Reference.com has a wealth of freely available detailed historical data. We are going to use <code>rvest</code> and <code>dplyr</code>, part of the <code>tidyverse</code>, to scrape, clean, and concatenate that historical data.</p>
+<pre class="r"><code>library(rvest)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(ggthemes)</code></pre>
+<div id="why-should-we-automate-this" class="section level2">
+<h2>Why should we automate this?</h2>
+<p>For each table on their site, PFR offers the option of saving the data as a <code>.csv</code> file. While this would be congenial if we wanted to look at one or two years of data, doing it 24 times would be tedious and, for me at least, prone to errors. The <code>rvest</code> package makes scraping the tables automatically virtually painless. With the added benefit that the data can be reloaded from scratch in the event of a mistake, the benefits of automating the data collection process here are clearly greater than the costs.</p>
+<p>I’m defining two functions below. The first gets a single year’s table from PFR, and the second applies that function to a vector of years, concatenating the output data and finishing the cleaning process.</p>
+<div id="get-one-table-from-pfr" class="section level3">
+<h3>Get one table from PFR</h3>
+<p>The key components of the pfr_single function defined below are numbered. The following list refers to those numbers, describing what exactly is going on at each stage.</p>
+<ol style="list-style-type: decimal">
+<li>using the sprintf function, the url where the fantasy football data corresponding to the desired year are stored is assigned to <code>url</code>.</li>
+<li>the column names of the scraped html table are spread across two rows, and in general pretty messy, so a new set of column names is assigned to <code>col</code>.</li>
+<li><code>read_html</code> reads all of the html at the supplied url and returns it as raw text.</li>
+<li><code>html_table</code> converts each table in the raw text returned by <code>read_html</code> to a <code>data.frame</code> and returns that as a list. We want the first (and in this case, only) table in the list.</li>
+<li>we’ve scraped the data and converted it into a data frame, but we read it in without headers, so the original column names in the html table are now parts of in the data. PFR also seeds headers throughout its html tables. To get rid of these, we convert the rank variable to an integer, which replaces any non-numeric values with NA, then we filter out cases with NA values and return the clean table.</li>
+</ol>
+<pre class="r"><code>#&#39; Scrape and clean data from profootballreference.com for a single
+#&#39; returns a single tibble with a position, passing, rushing, receiving
+#&#39; statistics for each player, along with age etc.
+#&#39;
+#&#39; @param yr integer -- integers between 1992 and 2016
+#&#39;
+#&#39; @return tbl_clean a tibble
+#&#39; @export
+#&#39;
+#&#39; @examples
+#&#39;
+pfr_single &lt;- function(yr) {
+  url &lt;- sprintf(&quot;https://www.pro-football-reference.com/years/%d/fantasy.htm&quot;,
+                 yr) # 1.
+
+  cols &lt;- c(&quot;rank&quot;, &quot;name&quot;, &quot;team&quot;, &quot;pos&quot;, &quot;age&quot;, &quot;played&quot;, &quot;started&quot;,
+            &quot;pass_cmp&quot;, &quot;pass_att&quot;, &quot;pass_yds&quot;, &quot;pass_td&quot;, &quot;pass_int&quot;,
+            &quot;rush_att&quot;, &quot;rush_yds&quot;, &quot;rush_ypc&quot;, &quot;rush_td&quot;,
+            &quot;rec_tgt&quot;, &quot;rec_rec&quot;, &quot;rec_yds&quot;, &quot;rec_ypr&quot;, &quot;rec_td&quot;,
+            &quot;f_points&quot;, &quot;dkpt&quot;, &quot;fdpt&quot;, &quot;vbd&quot;, &quot;pos_rank&quot;, &quot;ov_rank&quot;) # 2.
+  print(url)
+  tbl_raw &lt;- (read_html(url) %&gt;% # 3.
+                html_table(header = FALSE))[[1]] # 4.
+
+  colnames(tbl_raw) &lt;- cols
+
+  tbl_clean &lt;- tbl_raw %&gt;%
+    mutate(year = yr, rank = as.integer(rank)) %&gt;%
+    filter(complete.cases(.)) # 5.
+
+  return(tbl_clean)
+}</code></pre>
+</div>
+<div id="apply-pfr_single-to-a-to-a-range-of-years" class="section level3">
+<h3>Apply pfr_single to a to a range of years</h3>
+<p><code>scrape_fantasy</code> applies (using <code>lapply</code>) the pfr_single function to a vector of years, which returns a list of data frames that are bound together using <code>dplyr::bind_rows</code>. Before returning the bound data, we use <code>dplyr::mutate_at</code> to type all of the numeric columns, and then filter out players that have no fantasy points recorded in a season.</p>
+<pre class="r"><code>#&#39; Scrape and clean data from profootballreference.com for a range of years.
+#&#39; returns a single tibble with a position, passing, rushing, receiving
+#&#39; statistics for each player, along with age etc.
+#&#39;
+#&#39; @param yrs vector -- integers between 1993 and 2016
+#&#39; @param write logical -- whether or not to write the cleaned data to a csv in
+#&#39; the ./Data folder
+#&#39;
+#&#39; @return df_bound a tibble
+#&#39; @export fantasy_data_YRSTART_YREND.csv
+#&#39;
+#&#39; @examples
+#&#39;
+scrape_fantasy &lt;- function(yrs, write = TRUE) {
+  suppressWarnings(
+    df_bound &lt;- lapply(yrs, pfr_single) %&gt;%
+      bind_rows() %&gt;%
+      as_data_frame() %&gt;%
+      mutate_at(
+        .cols = vars(-name, -team, -pos),
+        .funs = as.numeric
+      ) %&gt;%
+      filter(pos != &quot;&quot;, !is.na(f_points))
+  )
+
+  if(write) {
+    write_csv(df_bound,
+      sprintf(&quot;./Data/fantasy_data_%d_%d.csv&quot;, min(yrs), max(yrs)))
+  }
+  return(df_bound)
+}</code></pre>
+</div>
+</div>
+<div id="example-plots" class="section level2">
+<h2>Example plots</h2>
+<p>We use the <code>scrape_fantasy</code> function defined above to collect season totals for each offensive player for the seasons between 1992 and 2016.</p>
+<pre class="r"><code>df_stats &lt;- scrape_fantasy(yrs = 1992:1993, write = FALSE)</code></pre>
+<pre><code>## [1] &quot;https://www.pro-football-reference.com/years/1992/fantasy.htm&quot;
+## [1] &quot;https://www.pro-football-reference.com/years/1993/fantasy.htm&quot;</code></pre>
+<p>Now that the data are all together, cleaned, and correctly typed, <code>ggplot2</code> offers a set of tools for quickly making exploratory visualizations. The following plots are not particularly refined, but they are a pretty good representation of the kind of thing that I would do when approaching any new data set “in the wild”, so to speak.</p>
+<div id="total-point-distributions-by-position" class="section level3">
+<h3>Total point distributions by position</h3>
+<p>The facetted histogram (or density plot) is a favourite tool of mine for identifying differences among groups.</p>
+<pre class="r"><code>df_stats %&gt;%
+  filter(f_points &gt; 0) %&gt;%
+  ggplot(aes(f_points, fill = pos)) +
+  geom_histogram(binwidth = 5) +
+  ggthemes::scale_fill_wsj() +
+  facet_grid(pos~.)</code></pre>
+<p><img src="/post/2017-09-09-html-tables_files/figure-html/p_pos_points-1.png" width="672" /></p>
+</div>
+<div id="total-point-concentrations-by-age-with-player-count-bars" class="section level3">
+<h3>Total point concentrations by age (with player count bars)</h3>
+<p>Jitter plots are imprecise by nature, but I like them when trying to get a sense of a continuous variable’s distribution as a function of a discrete variable, where a regular scatter plot would be unclear because many points would be stacked up on one another. I favour them over violin plots and boxplots because I find that those can obfuscate potentially interesting facts of the distributions in question.</p>
+<p>This plot also includes bars behind the jittered points that indicate the number of players that have played a season between 1992 and 2016 at the given age and position. Therefore the y-axis of each facet represents both fantasy points and number of players at the position.</p>
+<p>code</p>
+<pre class="r"><code>df_stats %&gt;%
+  filter(f_points &gt; 0) %&gt;%
+  ggplot(aes(age)) +
+  geom_bar(alpha = 0.4) +
+  geom_jitter(aes(y = f_points, colour = pos), alpha = 0.1) +
+  ggthemes::scale_color_wsj(guide = FALSE) +
+  facet_grid(pos~.)</code></pre>
+<p><img src="/post/2017-09-09-html-tables_files/figure-html/p_age_points-1.png" width="672" /></p>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
