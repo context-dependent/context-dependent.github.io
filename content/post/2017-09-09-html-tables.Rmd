@@ -64,7 +64,7 @@ pfr_single <- function(yr) {
             "pass_cmp", "pass_att", "pass_yds", "pass_td", "pass_int",
             "rush_att", "rush_yds", "rush_ypc", "rush_td",
             "rec_tgt", "rec_rec", "rec_yds", "rec_ypr", "rec_td",
-            "f_points", "dkpt", "fdpt", "vbd", "pos_rank", "ov_rank") # 2.
+            "f_points", "dkpt", "fdpt", "vbd", "pos_rank", "ov_rank", "mystery") # 2.
   print(url)
   tbl_raw <- (read_html(url) %>% # 3.
                 html_table(header = FALSE))[[1]] # 4.

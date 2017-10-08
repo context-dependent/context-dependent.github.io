@@ -56,7 +56,7 @@ pfr_single &lt;- function(yr) {
             &quot;pass_cmp&quot;, &quot;pass_att&quot;, &quot;pass_yds&quot;, &quot;pass_td&quot;, &quot;pass_int&quot;,
             &quot;rush_att&quot;, &quot;rush_yds&quot;, &quot;rush_ypc&quot;, &quot;rush_td&quot;,
             &quot;rec_tgt&quot;, &quot;rec_rec&quot;, &quot;rec_yds&quot;, &quot;rec_ypr&quot;, &quot;rec_td&quot;,
-            &quot;f_points&quot;, &quot;dkpt&quot;, &quot;fdpt&quot;, &quot;vbd&quot;, &quot;pos_rank&quot;, &quot;ov_rank&quot;) # 2.
+            &quot;f_points&quot;, &quot;dkpt&quot;, &quot;fdpt&quot;, &quot;vbd&quot;, &quot;pos_rank&quot;, &quot;ov_rank&quot;, &quot;mystery&quot;) # 2.
   print(url)
   tbl_raw &lt;- (read_html(url) %&gt;% # 3.
                 html_table(header = FALSE))[[1]] # 4.
@@ -112,6 +112,7 @@ scrape_fantasy &lt;- function(yrs, write = TRUE) {
 <pre class="r"><code>df_stats &lt;- scrape_fantasy(yrs = 1992:1993, write = FALSE)</code></pre>
 <pre><code>## [1] &quot;https://www.pro-football-reference.com/years/1992/fantasy.htm&quot;
 ## [1] &quot;https://www.pro-football-reference.com/years/1993/fantasy.htm&quot;</code></pre>
+<pre><code>## `.cols` has been renamed and is deprecated, please use `.vars`</code></pre>
 <p>Now that the data are all together, cleaned, and correctly typed, <code>ggplot2</code> offers a set of tools for quickly making exploratory visualizations. The following plots are not particularly refined, but they are a pretty good representation of the kind of thing that I would do when approaching any new data set “in the wild”, so to speak.</p>
 <div id="total-point-distributions-by-position" class="section level3">
 <h3>Total point distributions by position</h3>

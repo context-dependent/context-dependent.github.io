@@ -39,7 +39,7 @@ library(tibble)</code></pre>
 )
 
 stats</code></pre>
-<pre><code>## # A tibble: 9 × 4
+<pre><code>## # A tibble: 9 x 4
 ##    player  game assists goals
 ##     &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
 ## 1  Ondrej     1       2     1
@@ -60,18 +60,18 @@ stats</code></pre>
   gather(point_source, points, assists:goals)
 
 stats_long</code></pre>
-<pre><code>## # A tibble: 18 × 4
+<pre><code>## # A tibble: 18 x 4
 ##     player  game point_source points
 ##      &lt;chr&gt; &lt;dbl&gt;        &lt;chr&gt;  &lt;dbl&gt;
-## 1   Ondrej     1      assists      2
-## 2   Ondrej     2      assists      0
-## 3   Ondrej     3      assists      4
-## 4  Mateosh     1      assists      2
-## 5  Mateosh     2      assists      6
-## 6  Mateosh     3      assists      1
-## 7   Daniel     1      assists      2
-## 8   Daniel     2      assists      0
-## 9   Daniel     3      assists      0
+##  1  Ondrej     1      assists      2
+##  2  Ondrej     2      assists      0
+##  3  Ondrej     3      assists      4
+##  4 Mateosh     1      assists      2
+##  5 Mateosh     2      assists      6
+##  6 Mateosh     3      assists      1
+##  7  Daniel     1      assists      2
+##  8  Daniel     2      assists      0
+##  9  Daniel     3      assists      0
 ## 10  Ondrej     1        goals      1
 ## 11  Ondrej     2        goals      2
 ## 12  Ondrej     3        goals      0

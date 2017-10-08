@@ -1,0 +1,103 @@
+---
+title: Plot monthly means
+author: ''
+date: '2017-09-30'
+slug: plot-monthly-means
+categories: []
+tags:
+  - ggplot2
+  - lubridate
+---
+
+There are three reasons to aggregate data monthly, rather than hourly, daily, or weekly. 
+
+  1. **Alignment with corporate and government planning cycles:** 
+  fiscal quarters are the standard unit of corporate or government time, and months divide them evenly. 
+  Policies are implemented, benchmarks are set, and targets evaluated in terms of months. In the areas where
+  I work, aggregating data by month is valuable because it returns analysis results that line-up with the way
+  our clients already think about time.
+  2. **Accessibility to a wide variety of stakeholders:**
+  analysis products can be powerful drivers of decision making at all levels, and so they should be. Their 
+  reach and influence is, however, constrained by the number of people who can quickly understand them
+  and how they apply to them. Working to simplify outputs can often yield huge leaps in real-world impact.
+  3. **Efficiency in presentation:**
+  Hourly, daily, and weekly time-series charts can be tough to parse under the best of circumstances,
+  and nearly impossibly when they aren't large enough. Monthly charts simplify each data-point enough
+  that they can be presented quite compactly, in a table, a single chart, or a series of charts. 
+    
+Aggregating data by months can be a pain, because of their non-standard length^[for a quick and dirty summary of the history of the month, check out this post by reddit user]. Base R doesn't 
+have any out-of-the-box solutions for assigning a given date to a given month, but the 
+`lubridate` package gives us the tools we need (and many more) to do simple aggregation. 
+
+To illustrate the benefits of aggregating by month, we're going to use arrivals data from
+the `nycflights13` package to compare charts of the percentage of flights that arrived
+on time aggregated by hour, day, week, and month. 
+
+First, we'll calculate whether or not each flight in the data was on time, and then we'll 
+use the `lubridate` package's `floor_date` function to make day, week, and
+month variables out of the `time_hour` variable that is present in the data. 
+
+```{r}
+library(nycflights13)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+
+flights <- flights %>% 
+  mutate(
+    on_time = arr_delay >= 0,
+    day = floor_date(time_hour, "days"),
+    week = floor_date(time_hour, "weeks"),
+    month = floor_date(time_hour, "months"))
+
+```
+
+Next, we'll make four line plots, one for each unit of time. Before the data gets
+fed into the `ggplot` function, we need to calculate the percentage of flights
+that were on time by using `group_by` on the unit of time, and `summarize` to 
+get the mean of `on_time` for each one. 
+
+```{r}
+p_hourly <- flights %>% 
+  group_by(time_hour) %>% 
+  summarize(pct_on_time = mean(on_time)) %>% 
+  ggplot(aes(time_hour, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()
+
+p_daily <- flights %>% 
+  group_by(day) %>% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE)) %>% 
+  ggplot(aes(day, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()
+
+p_weekly <- flights %>% 
+  group_by(week) %>% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE)) %>% 
+  ggplot(aes(week, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()
+
+p_monthly <- flights %>% 
+  group_by(month) %>% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE), n = n()) %>% 
+  ggplot(aes(month, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()
+```
+
+Looking at the four plots next to one another using `grid.arrange` from the `gridExtra`
+package, the differences are clear. 
+
+```{r}
+gridExtra::grid.arrange(p_hourly, p_daily, p_weekly, p_monthly)
+```
+
+Monthly means look less exciting than means for the more granular units of time, but their simplicity lets us identify key facts immediately. It is obvious, for example, that the percentage of flights arriving on time dips significantly in september, which is much harder to make out in the noisier plots. Another benefit of having a simpler representation is that you can present it in less space. This leaves room for further aggregation and comparison across other features in the data. For example, different carriers could be affected differently by the seasons. The plots below give us a clear picture of seasonal variation in punctuality for each carrier in the data.
+
+```{r}
+p_monthly_car <- flights %>% 
+  group_by(month, carrier) %>% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE), n = n()) %>% 
+  ggplot(aes(month, pct_on_time)) + geom_line() + facet_wrap(~carrier)
+
+p_monthly_car
+```
