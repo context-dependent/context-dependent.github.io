@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nfl on A Hugo website</title>
+    <link>/tags/nfl/</link>
+    <description>Recent content in Nfl on A Hugo website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 09 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/nfl/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>HTML TABLES</title>
+      <link>/2017/09/09/html-tables/</link>
+      <pubDate>Sat, 09 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/2017/09/09/html-tables/</guid>
+      <description>This is the first in a series of articles that will use historical data from NFL seasons between 1992 and 2016 to illustrate some data munging, analysis, and visualization techniques in R. Pro-Football-Reference.com has a wealth of freely available detailed historical data. We are going to use rvest and dplyr, part of the tidyverse, to scrape, clean, and concatenate that historical data.
+library(rvest) library(dplyr) library(readr) library(ggplot2) library(ggthemes) Why should we automate this?</description>
+    </item>
+    
+  </channel>
+</rss>

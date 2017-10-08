@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lubridate on A Hugo website</title>
+    <link>/tags/lubridate/</link>
+    <description>Recent content in Lubridate on A Hugo website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 30 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/lubridate/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Plot monthly means</title>
+      <link>/2017/09/30/plot-monthly-means/</link>
+      <pubDate>Sat, 30 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/2017/09/30/plot-monthly-means/</guid>
+      <description>There are three reasons to aggregate data monthly, rather than hourly, daily, or weekly.
+Alignment with corporate and government planning cycles: fiscal quarters are the standard unit of corporate or government time, and months divide them evenly. Policies are implemented, benchmarks are set, and targets evaluated in terms of months. In the areas where I work, aggregating data by month is valuable because it returns analysis results that line-up with the way our clients already think about time.</description>
+    </item>
+    
+  </channel>
+</rss>

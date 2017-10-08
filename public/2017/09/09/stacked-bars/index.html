@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.26" />
+
+
+<title>STACKED BARS - A Hugo website</title>
+<meta property="og:title" content="STACKED BARS - A Hugo website">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.11.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">STACKED BARS</h1>
+
+    
+    <span class="article-date">2017/09/09</span>
+    
+
+    <div class="article-content">
+      <p>When first presented with the syntax of <code>ggplot2</code>, I found it so alien to the way that I had previously thought of making plots that my brain basically rejected it. Coming from other plotting functions in R, other statistical programs, or excel, its understandable that people would be intimidated and confused. Part of this is the layering system that the package uses to draw the plot. You set up an object, mapping data to aesthetic parameters, and then use functions (geoms) to interpret the mapped data in a specific way. In and of itself, this was confusing to me, but I think the bigger challenge was understanding the type of data <code>ggplot2</code> wants to deal with, namely, “tidy” data.</p>
+<p>There are lots of resources out there that explain in comprehensive and magnificient detail what it means for data to be “tidy”, but for our purposes here, we will stick to the simple idea that each column should be a variable, and each row should be an observation. A friend of mine recently asked me how to use ggplot to make a stacked bar chart of points per game, coloured by their source (goal / assist), for each player on a given team.</p>
+<p>Before we go any further, install these packages if you don’t have them already, and load them using <code>library</code>.</p>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggthemes)
+library(tibble)</code></pre>
+<div id="make-fake-game-data" class="section level2">
+<h2>Make fake game data</h2>
+<p>This is a hypothetical example of hockey data structured in the same way as the data in question. There were more variables present in that data, and more players, but these are all we need to demonstrate the mechanics involved.</p>
+<pre class="r"><code>stats &lt;- tribble(
+    ~player, ~game, ~assists, ~goals,
+   &quot;Ondrej&quot;,     1,        2,      1,
+   &quot;Ondrej&quot;,     2,        0,      2,
+   &quot;Ondrej&quot;,     3,        4,      0,
+  &quot;Mateosh&quot;,     1,        2,      2,
+  &quot;Mateosh&quot;,     2,        6,      1,
+  &quot;Mateosh&quot;,     3,        1,      2,
+   &quot;Daniel&quot;,     1,        2,      0,
+   &quot;Daniel&quot;,     2,        0,      1,
+   &quot;Daniel&quot;,     3,        0,      0
+)
+
+stats</code></pre>
+<pre><code>## # A tibble: 9 x 4
+##    player  game assists goals
+##     &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1  Ondrej     1       2     1
+## 2  Ondrej     2       0     2
+## 3  Ondrej     3       4     0
+## 4 Mateosh     1       2     2
+## 5 Mateosh     2       6     1
+## 6 Mateosh     3       1     2
+## 7  Daniel     1       2     0
+## 8  Daniel     2       0     1
+## 9  Daniel     3       0     0</code></pre>
+</div>
+<div id="reshape-the-points-and-assists-columns" class="section level2">
+<h2>Reshape the points and assists columns</h2>
+<p>Points per player per game will determine the height of the bars. Right now, the points variable is spread out across the assists and goals columns. Before plotting, we need to <code>gather</code> the two columns together, which will give us a column that tells us how many points were scored per player per game per point source, along with a column that indicates whether or not those points were scored with goals or assists.</p>
+<p>the <code>gather</code> function takes multiple columns and turns them into a key column, which uses the input column names as values, an a value column, which uses the input column values as values. In this case, I’m naming the key column <code>point_source</code>, and the value column <code>points</code>. After reshaping, we’re left with a row for each player, game, and point_source.</p>
+<pre class="r"><code>stats_long &lt;- stats %&gt;%
+  gather(point_source, points, assists:goals)
+
+stats_long</code></pre>
+<pre><code>## # A tibble: 18 x 4
+##     player  game point_source points
+##      &lt;chr&gt; &lt;dbl&gt;        &lt;chr&gt;  &lt;dbl&gt;
+##  1  Ondrej     1      assists      2
+##  2  Ondrej     2      assists      0
+##  3  Ondrej     3      assists      4
+##  4 Mateosh     1      assists      2
+##  5 Mateosh     2      assists      6
+##  6 Mateosh     3      assists      1
+##  7  Daniel     1      assists      2
+##  8  Daniel     2      assists      0
+##  9  Daniel     3      assists      0
+## 10  Ondrej     1        goals      1
+## 11  Ondrej     2        goals      2
+## 12  Ondrej     3        goals      0
+## 13 Mateosh     1        goals      2
+## 14 Mateosh     2        goals      1
+## 15 Mateosh     3        goals      2
+## 16  Daniel     1        goals      0
+## 17  Daniel     2        goals      1
+## 18  Daniel     3        goals      0</code></pre>
+</div>
+<div id="plot-results-for-each-player" class="section level2">
+<h2>Plot results for each player</h2>
+<p>These columns make sense if you think about the way that ggplot works. ggplot wants exactly one decision per one column of input data. We want a bar plot for each player, with a bar that represents thse number of points that they scored in a game, coloured by the point source. n this instance, we are asking ggplot to make 4 decisions: X-axis values (game), Y-axis values (points), bar fill colour (point_source), and plot facets (player).</p>
+<pre class="r"><code>stats_long %&gt;%
+  ggplot(aes(game, points, fill = point_source)) + #1. initial mapping
+    geom_bar(stat = &quot;identity&quot;) +                  #2. add bars points ~ game
+    facet_wrap(~player) +                          #3. split plots on player
+  # The following two lines change the look of the plot
+  # there are other scales and themes to choose from, these
+  # are just two that I like
+    ggthemes::scale_fill_wsj() +
+    ggthemes::theme_hc()</code></pre>
+<p><img src="/post/2017-09-09-stacked-bars_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
