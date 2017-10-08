@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.26" />
+
+
+<title>Plot monthly means - context-dependent</title>
+<meta property="og:title" content="Plot monthly means - context-dependent">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.11.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Plot monthly means</h1>
+
+    
+    <span class="article-date">2017/09/30</span>
+    
+
+    <div class="article-content">
+      <p>There are three reasons to aggregate data monthly, rather than hourly, daily, or weekly.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Alignment with corporate and government planning cycles:</strong> fiscal quarters are the standard unit of corporate or government time, and months divide them evenly. Policies are implemented, benchmarks are set, and targets evaluated in terms of months. In the areas where I work, aggregating data by month is valuable because it returns analysis results that line-up with the way our clients already think about time.</li>
+<li><strong>Accessibility to a wide variety of stakeholders:</strong> analysis products can be powerful drivers of decision making at all levels, and so they should be. Their reach and influence is, however, constrained by the number of people who can quickly understand them and how they apply to them. Working to simplify outputs can often yield huge leaps in real-world impact.</li>
+<li><strong>Efficiency in presentation:</strong> Hourly, daily, and weekly time-series charts can be tough to parse under the best of circumstances, and nearly impossibly when they aren’t large enough. Monthly charts simplify each data-point enough that they can be presented quite compactly, in a table, a single chart, or a series of charts.</li>
+</ol>
+<p>Aggregating data by months can be a pain, because of their non-standard length<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. Base R doesn’t have any out-of-the-box solutions for assigning a given date to a given month, but the <code>lubridate</code> package gives us the tools we need (and many more) to do simple aggregation.</p>
+<p>To illustrate the benefits of aggregating by month, we’re going to use arrivals data from the <code>nycflights13</code> package to compare charts of the percentage of flights that arrived on time aggregated by hour, day, week, and month.</p>
+<p>First, we’ll calculate whether or not each flight in the data was on time, and then we’ll use the <code>lubridate</code> package’s <code>floor_date</code> function to make day, week, and month variables out of the <code>time_hour</code> variable that is present in the data.</p>
+<pre class="r"><code>library(nycflights13)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(lubridate)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     date</code></pre>
+<pre class="r"><code>flights &lt;- flights %&gt;% 
+  mutate(
+    on_time = arr_delay &gt;= 0,
+    day = floor_date(time_hour, &quot;days&quot;),
+    week = floor_date(time_hour, &quot;weeks&quot;),
+    month = floor_date(time_hour, &quot;months&quot;))</code></pre>
+<p>Next, we’ll make four line plots, one for each unit of time. Before the data gets fed into the <code>ggplot</code> function, we need to calculate the percentage of flights that were on time by using <code>group_by</code> on the unit of time, and <code>summarize</code> to get the mean of <code>on_time</code> for each one.</p>
+<pre class="r"><code>p_hourly &lt;- flights %&gt;% 
+  group_by(time_hour) %&gt;% 
+  summarize(pct_on_time = mean(on_time)) %&gt;% 
+  ggplot(aes(time_hour, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()
+
+p_daily &lt;- flights %&gt;% 
+  group_by(day) %&gt;% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE)) %&gt;% 
+  ggplot(aes(day, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()
+
+p_weekly &lt;- flights %&gt;% 
+  group_by(week) %&gt;% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE)) %&gt;% 
+  ggplot(aes(week, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()
+
+p_monthly &lt;- flights %&gt;% 
+  group_by(month) %&gt;% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE), n = n()) %&gt;% 
+  ggplot(aes(month, pct_on_time)) + 
+  scale_y_continuous(limits = c(0,1)) + geom_line()</code></pre>
+<p>Looking at the four plots next to one another using <code>grid.arrange</code> from the <code>gridExtra</code> package, the differences are clear.</p>
+<pre class="r"><code>gridExtra::grid.arrange(p_hourly, p_daily, p_weekly, p_monthly)</code></pre>
+<p><img src="/post/2017-09-30-plot-monthly-means_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Monthly means look less exciting than means for the more granular units of time, but their simplicity lets us identify key facts immediately. It is obvious, for example, that the percentage of flights arriving on time dips significantly in september, which is much harder to make out in the noisier plots. Another benefit of having a simpler representation is that you can present it in less space. This leaves room for further aggregation and comparison across other features in the data. For example, different carriers could be affected differently by the seasons. The plots below give us a clear picture of seasonal variation in punctuality for each carrier in the data.</p>
+<pre class="r"><code>p_monthly_car &lt;- flights %&gt;% 
+  group_by(month, carrier) %&gt;% 
+  summarize(pct_on_time = mean(on_time, na.rm = TRUE), n = n()) %&gt;% 
+  ggplot(aes(month, pct_on_time)) + geom_line() + facet_wrap(~carrier)
+
+p_monthly_car</code></pre>
+<p><img src="/post/2017-09-30-plot-monthly-means_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>for a quick and dirty summary of the history of the month, check out this post by reddit user<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
