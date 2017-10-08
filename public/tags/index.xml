@@ -6,7 +6,7 @@
     <description>Recent content in Tags on context-dependent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 09 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 Sep 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Ggplot2</title>
       <link>/tags/ggplot2/</link>
-      <pubDate>Sat, 09 Sep 2017 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 30 Sep 2017 00:00:00 +0000</pubDate>
       
       <guid>/tags/ggplot2/</guid>
       <description></description>
@@ -26,6 +26,15 @@
       <pubDate>Sat, 09 Sep 2017 00:00:00 +0000</pubDate>
       
       <guid>/tags/hockey/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lubridate</title>
+      <link>/tags/lubridate/</link>
+      <pubDate>Sat, 30 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/lubridate/</guid>
       <description></description>
     </item>
     

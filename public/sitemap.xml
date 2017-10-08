@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/2017/09/30/plot-monthly-means/</loc>
+    <lastmod>2017-09-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2017/09/09/html-tables/</loc>
     <lastmod>2017-09-09T00:00:00+00:00</lastmod>
   </url>
@@ -39,13 +44,19 @@
   
   <url>
     <loc>/tags/ggplot2/</loc>
-    <lastmod>2017-09-09T00:00:00+00:00</lastmod>
+    <lastmod>2017-09-30T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/hockey/</loc>
     <lastmod>2017-09-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/lubridate/</loc>
+    <lastmod>2017-09-30T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -63,7 +74,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2017-09-09T00:00:00+00:00</lastmod>
+    <lastmod>2017-09-30T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -99,13 +110,13 @@
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2017-09-09T00:00:00+00:00</lastmod>
+    <lastmod>2017-09-30T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2017-09-09T00:00:00+00:00</lastmod>
+    <lastmod>2017-09-30T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
